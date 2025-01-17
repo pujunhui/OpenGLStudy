@@ -9,17 +9,6 @@
 #include "application/Application.h"
 #include "glframework/texture.h"
 
-/*
-*┌────────────────────────────────────────────────┐
-*│　目	   标： OpenGL当中实现Application封装
-*│　讲    师： 赵新政(Carma Zhao)
-*│　拆分目标：
-*│
-*│　		1	编写一个单例类的Application
-*│　		2	编写一个OnResize，响应窗体发生变化
-*└────────────────────────────────────────────────┘
-*/
-
 GLuint vao;
 Shader* shader = nullptr;
 Texture* texture = nullptr;
@@ -31,88 +20,6 @@ void OnResize(int width, int height) {
 
 void OnKey(int key, int action, int mods) {
     std::cout << key << std::endl;
-}
-
-void prepareSingleBuffer() {
-    //1 准备顶点位置数据和颜色数据
-    float positions[] = {
-        -0.5f,-0.5f,0.0f,
-        0.5f,-0.5f,0.0f,
-        0.5f,0.5f,0.0f,
-    };
-    float colors[] = {
-        1.0f,0.0f,0.0f,
-        0.0f,1.0f,0.0f,
-        0.0f,0.0f,0.0f,
-    };
-
-    //2 为位置&颜色数据各自生成一个vbo
-    GLuint posVbo = 0, colorVbo = 0;
-    GL_CALL(glGenBuffers(1, &posVbo));
-    GL_CALL(glGenBuffers(1, &colorVbo));
-
-    //3 给两个分开的vbo各自填充数据
-    //填充positions数据
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
-    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
-    //填充colors数据
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
-    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW));
-
-    //4 生成vao并且绑定
-    GLuint vao = 0;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    //5 分别将位置/颜色属性的描述信息加入vao当中
-    //5.1描述位置属性
-    glBindBuffer(GL_ARRAY_BUFFER, posVbo);//只有绑定了posVbo，下面的属性描述才会与此vbo相关
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-    //5.2 描述颜色属性
-    glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-    glBindVertexArray(0);
-
-    //销毁vbo
-    //GL_CALL(glDeleteBuffers(1, &posVbo));
-    //GL_CALL(glDeleteBuffers(1, &colorVbo));
-}
-
-void prepareInterleavedBuffer() {
-    //1 准备好Interleaved数据（位置+颜色）
-    float vertices[] = {
-        -0.5f,-0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
-         0.5f,-0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
-         0.5f, 0.5f, 0.0f,  0.0f, 0.0f, 0.0f,
-    };
-
-    //2 创建唯一的vbo
-    GLuint vbo = 0;
-    GL_CALL(glGenBuffers(1, &vbo));
-
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
-
-    //3 创建并绑定vao
-    GL_CALL(glGenVertexArrays(1, &vao));
-    GL_CALL(glBindVertexArray(vao));
-
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-    //4 为vao加入位置和颜色的描述信息
-    //4.1 位置描述信息
-    GL_CALL(glEnableVertexAttribArray(0));
-    GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0));
-
-    //4.2 颜色描述信息
-    GL_CALL(glEnableVertexAttribArray(1));
-    GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))));
-
-    //5 扫尾工作：解绑当前vao
-    glBindVertexArray(0);
 }
 
 void prepareShader() {
@@ -150,7 +57,7 @@ void prepareVAO() {
     GL_CALL(glGenVertexArrays(1, &vao));
     GL_CALL(glBindVertexArray(vao));
 
-    //绑定vbo加入属性描述信息
+    //绑定vbo加入属性描述信息（前面已经绑定VBO了，这里即使不再次绑定，运行也是没问题的）
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
 
     //加入位置属性描述信息
@@ -163,7 +70,7 @@ void prepareVAO() {
     GL_CALL(glEnableVertexAttribArray(2));
     GL_CALL(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 6)));
 
-    //绑定ebo
+    //绑定ebo（注意：这里必须在绑定VAO之后再次绑定）
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
 
     GL_CALL(glBindVertexArray(0));
@@ -188,6 +95,8 @@ void render() {
 
     //发出绘制指令
     GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+
+    //解绑vao
     GL_CALL(glBindVertexArray(0));
 
     shader->end();

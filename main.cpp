@@ -141,7 +141,7 @@ void prepareVAO() {
     GL_CALL(glGenVertexArrays(1, &vao));
     GL_CALL(glBindVertexArray(vao));
 
-    //绑定vbo加入属性描述信息
+    //绑定vbo加入属性描述信息（前面已经绑定VBO了，这里即使不再次绑定，运行也是没问题的）
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
 
     //加入位置属性描述信息
@@ -183,6 +183,8 @@ void render() {
 
     //发出绘制指令
     GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+
+    //解绑vao
     GL_CALL(glBindVertexArray(0));
 
     shader->end();

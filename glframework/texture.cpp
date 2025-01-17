@@ -11,7 +11,7 @@ Texture::Texture(const std::string& path, unsigned int unit) {
     //1 stbImage 读取图片
     int channels;
 
-    //--反转y轴
+    //--反转y轴--
     stbi_set_flip_vertically_on_load(true);
 
     unsigned char* data = stbi_load(path.c_str(), &mWidth, &mHeight, &channels, STBI_rgb_alpha);
@@ -29,16 +29,16 @@ Texture::Texture(const std::string& path, unsigned int unit) {
     glGenerateMipmap(GL_TEXTURE_2D);
 
     //手动生成mipmap，注意：这里数据是错误的
-    //int width = mWidth;
-    //int height = mHeight;
-    //for (int i = 0; true; i++) {
-    //    glTexImage2D(GL_TEXTURE_2D, i, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-    //    if (width == 1 && height == 1) {
-    //        break;
-    //    }
-    //    width = std::max(width / 2, 1);
-    //    height = std::max(height / 2, 1);
-    //}
+    /*int width = mWidth;
+    int height = mHeight;
+    for (int i = 0; true; i++) {
+        glTexImage2D(GL_TEXTURE_2D, i, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        if (width == 1 && height == 1) {
+            break;
+        }
+        width = std::max(width / 2, 1);
+        height = std::max(height / 2, 1);
+    }*/
 
 
     //***释放数据
@@ -53,6 +53,8 @@ Texture::Texture(const std::string& path, unsigned int unit) {
     //5 设置纹理的包裹方式
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//u
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);//v
+
+    //glBindTexture(GL_TEXTURE_2D, 0); //纹理不允许解绑
 }
 
 

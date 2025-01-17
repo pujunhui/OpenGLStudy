@@ -7,22 +7,22 @@ in vec2 uv;
 uniform sampler2D sampler;
 uniform float time;
 
-//Í¨¹ıÏñËØ¼ÆËãmipmap²ã¼¶
+//é€šè¿‡åƒç´ è®¡ç®—mipmapå±‚çº§
 
 void main()
 {
-	//1 »ñÈ¡µ±Ç°ÏñËØ¶ÔÓ¦µÄÎÆÀíÉÏµÄÎÆËØ¾ßÌåÎ»ÖÃ
+	//1 è·å–å½“å‰åƒç´ å¯¹åº”çš„çº¹ç†ä¸Šçš„çº¹ç´ å…·ä½“ä½ç½®
 	vec2 location = uv * vec2(200.0, 250.0);
 
-	//2 ¼ÆËãµ±Ç°ÏñËØ¶ÔÓ¦ÎÆËØ¾ßÌåÎ»ÖÃÔÚxy·½ÏòÉÏµÄ±ä»¯Á¿
+	//2 è®¡ç®—å½“å‰åƒç´ å¯¹åº”çº¹ç´ å…·ä½“ä½ç½®åœ¨xyæ–¹å‘ä¸Šçš„å˜åŒ–é‡
 	vec2 dx = dFdx(location);
 	vec2 dy = dFdy(location);
 
-	//3 Ñ¡Ôñ×î´óµÄdelta£¬Çólog2(delta)
+	//3 é€‰æ‹©æœ€å¤§çš„deltaï¼Œæ±‚log2(delta)
 	float maxDelta = sqrt(max(dot(dx, dx),dot(dy, dy)));
 	float L = log2(maxDelta);
 
-	//4 ¼ÆËã³ömipmapµÄ²ÉÓÃ¼¶±ğ
+	//4 è®¡ç®—å‡ºmipmapçš„é‡‡ç”¨çº§åˆ«
 	int level = max(int(L + 0.5), 0);
 
 	//FragColor = textureLod(sampler, uv, level);

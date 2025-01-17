@@ -17,8 +17,9 @@ void main()
 
 	gl_Position = vec4(aPos, 1.0);
 	color = aColor;
-//	float deltaU = time * 0.3;
 
+//	float deltaU = time * 0.3;
 //	uv = vec2(aUV.x + deltaU, aUV.y);
+
 	uv = aUV;
 }

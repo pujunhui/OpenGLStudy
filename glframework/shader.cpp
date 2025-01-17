@@ -124,6 +124,14 @@ void Shader::setInt(const std::string& name, int value) {
     glUniform1i(location, value);
 }
 
+void Shader::setMatrix4x4(const std::string& name, glm::mat4 value) {
+    //1 通过名称拿到Uniform变量的位置Location
+    GLint location = GL_CALL(glGetUniformLocation(mProgram, name.c_str()));
+
+    //2 通过Location更新Uniform变量的值
+    //transpose参数：表示是否对传输进去的矩阵数据进行转置
+    glUniformMatrix4fv(location, 1, false, glm::value_ptr(value));
+}
 
 void Shader::checkShaderErrors(GLuint target, std::string type) {
     int success = 0;
