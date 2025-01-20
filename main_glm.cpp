@@ -33,10 +33,10 @@ void prepareVAO() {
     //准备顶点数据数组
     float vertices[] = {
         //x    y   z       r     g    b      u    v
-        -0.5, 0.5, 0.0,  1.0f, 0.0f, 0.0f,  0.0, 1.0,   //左上
-        -0.5,-0.5, 0.0,  0.0f, 1.0f, 0.0f,  0.0, 0.0,   //左下
-         0.5,-0.5, 0.0,  0.0f, 0.0f, 1.0f,  1.0, 0.0,   //右下
-         0.5, 0.5, 0.0,  0.5f, 0.5f, 0.5f,  1.0, 1.0,   //右上
+        -0.5, 0.5, -0.9,  1.0f, 0.0f, 0.0f,  0.0, 1.0,   //左上
+        -0.5,-0.5, -0.9,  0.0f, 1.0f, 0.0f,  0.0, 0.0,   //左下
+         0.5,-0.5, -0.9,  0.0f, 0.0f, 1.0f,  1.0, 0.0,   //右下
+         0.5, 0.5, -0.9,  0.5f, 0.5f, 0.5f,  1.0, 1.0,   //右上
     };
     //准备顶点索引数组
     int indices[] = {
@@ -83,7 +83,10 @@ void prepareTexture() {
     texture = new Texture("assets/textures/goku.jpg", 0);
 }
 
-glm::mat4 transform(1.0);
+glm::mat4 transform(1.0f);
+glm::mat4 viewMatrix(1.0f);
+glm::mat4 orthoMatrix(1.0f);
+glm::mat4 perspectiveMatrix(1.0f);
 
 //旋转变换
 void doRotationTransform() {
@@ -124,30 +127,54 @@ void doRotation() {
     transform = glm::rotate(glm::mat4(1.0f), glm::radians(degree), glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
-void preTransform() {
-    //目标二：先平移再叠加旋转
-    //transform = glm::translate(transform, glm::vec3(0.5f, 0.0f, 0.0f));
-
-    //目标三：先旋转再叠加平移
-    //transform = glm::rotate(transform, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-
-    //目标四：先做一次缩放，再叠加平移
-    transform = glm::scale(transform, glm::vec3(0.5f, 0.5f, 1.0f));
-}
-
 //矩阵叠加变换实验
 void doTransform1() {
     //目标一：旋转的矩形
     //transform = glm::rotate(transform, glm::radians(0.1f), glm::vec3(0.0f, 0.0f, 1.0f));
 
+    static bool first = true;
     //目标二：先平移再叠加旋转
+    //if (first) {
+    //    transform = glm::translate(transform, glm::vec3(0.5f, 0.0f, 0.0f));
+    //    first = false;
+    //}
     //transform = glm::rotate(transform, glm::radians(0.1f), glm::vec3(0.0f, 0.0f, 1.0f));
 
     //目标三：先旋转再叠加平移
+    //if (first) {
+    //    transform = glm::rotate(transform, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    //    first = false;
+    //}
     //transform = glm::translate(transform, glm::vec3(0.001f, 0.0f, 0.0f));
 
     //目标四：先做一次缩放，再叠加平移
+    if (first) {
+        transform = glm::scale(transform, glm::vec3(0.5f, 0.5f, 1.0f));
+        first = false;
+    }
     transform = glm::translate(transform, glm::vec3(0.001f, 0.0f, 0.0f));
+}
+
+void prepareCamera() {
+    //lookAt：生成一个viewMatrix
+    //eye:当前摄像机所在的位置
+    //center:当前摄像机看向的那个点
+    //up:穹顶向量
+    viewMatrix = glm::lookAt(glm::vec3(0.5f, 0.0f, 0.5f), glm::vec3(0.5f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
+void prepareOrtho() {
+    //ortho的数据是摄像机坐标系下的数据
+    //生成一个投影盒子，将内部顶点转化到NDC坐标系
+    orthoMatrix = glm::ortho(-0.4f, 0.6f, -2.0f, 2.0f, 2.0f, -2.0f);
+}
+
+void preparePerspective() {
+    //fovy:y轴方向的视张角
+    //aspect:近平面的横纵百分比
+    //near:近平面距离
+    //far:远平面距离
+    perspectiveMatrix = glm::perspective(glm::radians(60.f), (float)app->getWidth() / (float)app->getHeight(), 0.1f, 1000.0f);
 }
 
 void render() {
@@ -158,8 +185,23 @@ void render() {
     shader->begin();
 
     shader->setInt("sampler", 0);
-    shader->setMatrix4x4("transform", transform);
 
+    //shader->setMatrix4x4("transform", transform);
+    //shader->setMatrix4x4("viewMatrix", glm::mat3(1.0f));
+    //shader->setMatrix4x4("projectionMatrix", glm::mat3(1.0f));
+    
+    //shader->setMatrix4x4("transform", glm::mat3(1.0f));
+    //shader->setMatrix4x4("viewMatrix", viewMatrix);
+    //shader->setMatrix4x4("projectionMatrix", glm::mat3(1.0f));
+
+    //shader->setMatrix4x4("transform", glm::mat3(1.0f));
+    //shader->setMatrix4x4("viewMatrix", glm::mat3(1.0f));
+    //shader->setMatrix4x4("projectionMatrix", orthoMatrix);
+
+    shader->setMatrix4x4("transform", glm::mat3(1.0f));
+    shader->setMatrix4x4("viewMatrix", glm::mat3(1.0f));
+    shader->setMatrix4x4("projectionMatrix", perspectiveMatrix);
+     
     //绑定当前的vao
     GL_CALL(glBindVertexArray(vao));
 
@@ -230,7 +272,10 @@ int main() {
     //doScaleTransform();
     //doTransform();
 
-    preTransform();
+    prepareCamera();
+    prepareOrtho();
+    preparePerspective();
+
     while (app->update()) {
         //doRotation();
         doTransform1();
