@@ -3,7 +3,7 @@
 #include "../../glframework/core.h"
 #include "cameraControl.h"
 
-class GameCameraControl :CameraControl {
+class GameCameraControl :public CameraControl {
 public:
 	GameCameraControl();
 	~GameCameraControl();

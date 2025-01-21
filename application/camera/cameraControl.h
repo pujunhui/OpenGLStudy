@@ -9,7 +9,9 @@ public:
     virtual void onMouse(int button, int action, double xpos, double ypos);
     virtual void onCurosr(double xpos, double ypos);
     virtual void onKey(int key, int action, int mods);
+    virtual void onScroll(double offset);
 
+    //每一帧渲染之前都要进行调用，每一更新的行为可以放在这里
     virtual void update();
 
     void setCamera(Camera* camera) {
@@ -20,6 +22,10 @@ public:
         mSensitivity = s;
     }
 
+    void setScaleSpeed(float s) {
+        mScaleSpeed = s;
+    }
+
 protected:
     bool mLeftMouseDown = false;
     bool mRightMouseDown = false;
@@ -27,6 +33,9 @@ protected:
     std::map<int, bool> mKeyMap;
 
     double mCurrentX = 0.0, mCurrentY = 0.0;
-    float mSensitivity = 0.02f;
-    Camera* mCamera;
+    //灵敏度
+    float mSensitivity = 0.2f;
+    Camera* mCamera = nullptr;
+
+    float mScaleSpeed = 0.2f;
 };

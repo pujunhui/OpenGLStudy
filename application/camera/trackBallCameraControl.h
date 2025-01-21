@@ -3,12 +3,13 @@
 #include "../../glframework/core.h"
 #include "cameraControl.h"
 
-class TrackBallCameraControl :CameraControl {
+class TrackBallCameraControl :public CameraControl {
 public:
     TrackBallCameraControl();
 	~TrackBallCameraControl();
 
     void onCurosr(double xpos, double ypos) override;
+    void onScroll(double offset) override;
 
 private:
 	void pitch(float angle);
@@ -16,5 +17,5 @@ private:
 
 
 private:
-	float mTranslateSpeed = 0.005f;
+	float mMoveSpeed = 0.005f;
 };

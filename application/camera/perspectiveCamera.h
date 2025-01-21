@@ -8,8 +8,9 @@ public:
     ~PerspectiveCamera();
 
     glm::mat4 getProjectionMatrix() override;
+    void scale(float deltaScale) override;
 
-public:
+private:
     float mFovy = 0.0f;
     float mAspect = 0.0f;
     float mNear = 0.0f;

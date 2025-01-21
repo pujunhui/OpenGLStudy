@@ -61,6 +61,15 @@ bool Application::init(const int& width, const int& height) {
     //键盘回调
     glfwSetKeyCallback(mWindow, keyCallback);
 
+    //鼠标点击事件回调
+    glfwSetMouseButtonCallback(mWindow, mouseCallback);
+
+    //鼠标移动事件回调
+    glfwSetCursorPosCallback(mWindow, cursorCallback);
+
+    //鼠标滚轮事件回调
+    glfwSetScrollCallback(mWindow, scrollCallback);
+
     return true;
 }
 
@@ -85,6 +94,10 @@ void Application::destroy() {
     glfwTerminate();
 }
 
+void Application::getCursorPosition(double* x, double* y) {
+    glfwGetCursorPos(mWindow, x, y);
+}
+
 void Application::frameBufferSizeCallback(GLFWwindow* window, int width, int height) {
     Application* self = (Application*)glfwGetWindowUserPointer(window);
     if (self->mResizeCallback != nullptr) {
@@ -106,5 +119,26 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
     Application* self = (Application*)glfwGetWindowUserPointer(window);
     if (self->mKeyBoardCallback != nullptr) {
         self->mKeyBoardCallback(key, action, mods);
+    }
+}
+
+void Application::mouseCallback(GLFWwindow* window, int botton, int action, int mods) {
+    Application* self = (Application*)glfwGetWindowUserPointer(window);
+    if (self->mMouseCallback != nullptr) {
+        self->mMouseCallback(botton, action, mods);
+    }
+}
+
+void Application::cursorCallback(GLFWwindow* window, double xpos, double ypos) {
+    Application* self = (Application*)glfwGetWindowUserPointer(window);
+    if (self->mCursorCallback != nullptr) {
+        self->mCursorCallback(xpos, ypos);
+    }
+}
+
+void Application::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+    Application* self = (Application*)glfwGetWindowUserPointer(window);
+    if (self->mCursorCallback != nullptr) {
+        self->mScrollCallback(yoffset);
     }
 }
