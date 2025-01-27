@@ -40,6 +40,8 @@ add_executable(main_camera "main_camera.cpp" "glad.c")
 
 add_executable(main_depthtest "main_depthtest.cpp" "glad.c")
 
+add_executable(main_geometry "main_geometry.cpp" "glad.c")
+
 #搜索所有的cpp，加入SRCS变量中
 #aux_source_directory(. SRCS)
 
@@ -51,3 +53,4 @@ target_link_libraries(main_mipmap glfw3.lib wrapper app fw)
 target_link_libraries(main_glm glfw3.lib wrapper app fw)
 target_link_libraries(main_camera glfw3.lib wrapper app fw)
 target_link_libraries(main_depthtest glfw3.lib wrapper app fw)
+target_link_libraries(main_geometry glfw3.lib wrapper app fw)
