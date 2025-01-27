@@ -27,15 +27,19 @@ public:
     }
 
 protected:
+    //鼠标的按键状态
     bool mLeftMouseDown = false;
     bool mRightMouseDown = false;
     bool mMiddleMouseDown = false;
+    //键盘按键状态
     std::map<int, bool> mKeyMap;
 
+    //当前鼠标位置
     double mCurrentX = 0.0, mCurrentY = 0.0;
     //灵敏度
     float mSensitivity = 0.2f;
     Camera* mCamera = nullptr;
 
+    //缩放速度
     float mScaleSpeed = 0.2f;
 };

@@ -8,7 +8,8 @@ public:
 	GameCameraControl();
 	~GameCameraControl();
 
-	void onMouse(int button, int action, double xpos, double ypos) override;
+    void onCurosr(double xpos, double ypos) override;
+    void onScroll(double offset) override;
 	void update() override;
 
 	void pitch(float angle);
@@ -19,5 +20,6 @@ public:
 	}
 
 private:
-	float mSpeed = 1.0f;
+    float mPitch{ 0.0f };
+    float mSpeed{ 0.01f };
 };

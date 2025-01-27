@@ -27,24 +27,29 @@ CameraControl* cameraControl = nullptr;
 
 void OnResize(int width, int height) {
     GL_CALL(glViewport(0, 0, width, height));
+    std::cout << "OnResize(" << width << ", " << height << ")" << std::endl;
 }
 
 void OnKey(int key, int action, int mods) {
     cameraControl->onKey(key, action, mods);
+    std::cout << "OnKey(" << key << ", " << action << ", " << mods << ")" << std::endl;
 }
 
 void OnMouse(int botton, int action, int mods) {
     double x, y;
     app->getCursorPosition(&x, &y);
     cameraControl->onMouse(botton, action, x, y);
+    std::cout << "OnMouse(" << botton << ", " << action << ", " << x << ", " << y << ")" << std::endl;
 }
 
 void OnCursor(double xpos, double ypos) {
     cameraControl->onCurosr(xpos, ypos);
+    std::cout << "OnCursor(" << xpos << ", " << ypos << ")" << std::endl;
 }
 
 void OnScroll(double offset) {
     cameraControl->onScroll(offset);
+    std::cout << "OnScroll(" << offset << ")" << std::endl;
 }
 
 void prepareShader() {
@@ -106,10 +111,11 @@ void prepareTexture() {
 }
 
 void prepareCamera() {
-    //camera = new PerspectiveCamera(60.0f, (float)app->getWidth() / (float)app->getHeight(), 0.1f, 1000.0f);
+    camera = new PerspectiveCamera(60.0f, (float)app->getWidth() / (float)app->getHeight(), 0.1f, 1000.0f);
     float size = 3.0f;
-    camera = new OrthographicCamera(-size, size, -size, size, size, -size); //看向的-z轴
-    cameraControl = new TrackBallCameraControl();
+    //camera = new OrthographicCamera(-size, size, -size, size, size, -size); //看向的-z轴
+    //cameraControl = new TrackBallCameraControl();
+    cameraControl = new GameCameraControl();
     cameraControl->setCamera(camera);
     cameraControl->setSensitivity(0.8f);
 }

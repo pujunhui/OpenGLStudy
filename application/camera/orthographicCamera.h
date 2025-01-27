@@ -11,6 +11,7 @@ public:
     void scale(float deltaScale) override;
 
 private:
+    //正交投影的坐标都是摄像头坐标系中的坐标
     float mLeft = 0.0f;
     float mRight = 0.0f;
     float mTop = 0.0f;
