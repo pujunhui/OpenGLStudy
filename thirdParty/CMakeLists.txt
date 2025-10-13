@@ -11,7 +11,7 @@ set_target_properties(glfw PROPERTIES
 )
 
 # 创建 glad 库
-add_library(glad SHARED ${THIRD_PARTY_DIR}/glad/src/glad.c)
+add_library(glad STATIC ${THIRD_PARTY_DIR}/glad/src/glad.c)
 target_include_directories(glad PUBLIC "${THIRD_PARTY_DIR}/glad/include")
 
 # 创建 glm 库

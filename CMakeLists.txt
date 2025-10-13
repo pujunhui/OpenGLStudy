@@ -10,10 +10,13 @@ set(CMAKE_CXX_STANDARD 17)
 #往项目中加入一个全局的预编译宏
 add_definitions(-DDEBUG)
 
-#把需要拷贝的资源路径都放到ASSETS里
-file(GLOB ASSETS "./assets" ${GLFW})
+include_directories(.)
 
-#把ASSETS指代的目录集合内容，都拷贝到可执行文件目录下
+#将assets目录下的文件拷贝到可执行目录下
+file(GLOB ASSETS 
+    "./assets"
+    "./thirdParty/assimp/bin/assimp-vc143-mtd.dll"
+)
 file(COPY ${ASSETS} DESTINATION ${CMAKE_BINARY_DIR})
 
 #将wrapper文件夹纳入到编译系统
@@ -23,17 +26,31 @@ add_subdirectory(glframework)
 add_subdirectory(thirdParty)
 
 #本工程所有cpp文件编译链接，生成exe
-add_executable(main "main.cpp")
 
-add_executable(main_mipmap "main_mipmap.cpp")
-
-add_executable(main_glm "main_glm.cpp")
-
-add_executable(main_camera "main_camera.cpp")
-
-add_executable(main_depthtest "main_depthtest.cpp")
-
-add_executable(main_geometry "main_geometry.cpp")
+add_executable(01_window "samples/01_window.cpp")
+add_executable(02_events "samples/02_events.cpp")
+add_executable(03_glad "samples/03_glad.cpp")
+add_executable(04_glError "samples/04_glError.cpp")
+add_executable(05_application "samples/05_application.cpp")
+add_executable(06_vbo "samples/06_vbo.cpp")
+add_executable(07_vao "samples/07_vao.cpp")
+add_executable(08_shader "samples/08_shader.cpp")
+add_executable(09_drawTriangles "samples/09_drawTriangle.cpp")
+add_executable(10_drawMode "samples/10_drawMode.cpp")
+add_executable(11_ebo "samples/11_ebo.cpp")
+add_executable(12_colorfulTriangle "samples/12_colorfulTriangle.cpp")
+add_executable(13_shaderClass "samples/13_shaderClass.cpp")
+add_executable(14_uniform "samples/14_uniform.cpp")
+add_executable(15_texture "samples/15_texture.cpp")
+add_executable(16_texture_sampler "samples/16_texture_sampler.cpp")
+add_executable(17_texture_wrap "samples/17_texture_wrap.cpp")
+add_executable(18_textureClass "samples/18_textureClass.cpp")
+add_executable(19_texture_blending "samples/19_texture_blending.cpp")
+add_executable(20_mipmap "samples/20_mipmap.cpp")
+add_executable(21_glm "samples/21_glm.cpp")
+add_executable(22_camera "samples/22_camera.cpp")
+add_executable(23_depthtest "samples/23_depthtest.cpp")
+add_executable(24_geometry "samples/24_geometry.cpp")
 
 #搜索所有的cpp，加入SRCS变量中
 #aux_source_directory(. SRCS)
@@ -41,9 +58,27 @@ add_executable(main_geometry "main_geometry.cpp")
 #本工程主程序文件及输出程序名称
 #add_executable(glStudy ${SRCS})
 
-target_link_libraries(main glfw3.lib wrapper app fw)
-target_link_libraries(main_mipmap glfw3.lib wrapper app fw)
-target_link_libraries(main_glm glfw3.lib wrapper app fw)
-target_link_libraries(main_camera glfw3.lib wrapper app fw)
-target_link_libraries(main_depthtest glfw3.lib wrapper app fw)
-target_link_libraries(main_geometry glfw3.lib wrapper app fw)
+target_link_libraries(01_window glfw)
+target_link_libraries(02_events glfw)
+target_link_libraries(03_glad glfw glad)
+target_link_libraries(04_glError glfw glad wrapper)
+target_link_libraries(05_application wrapper app)
+target_link_libraries(06_vbo wrapper app)
+target_link_libraries(07_vao wrapper app)
+target_link_libraries(08_shader wrapper app)
+target_link_libraries(09_drawTriangles wrapper app)
+target_link_libraries(10_drawMode wrapper app)
+target_link_libraries(11_ebo wrapper app)
+target_link_libraries(12_colorfulTriangle wrapper app)
+target_link_libraries(13_shaderClass wrapper app fw)
+target_link_libraries(14_uniform wrapper app fw)
+target_link_libraries(15_texture wrapper app fw stb)
+target_link_libraries(16_texture_sampler wrapper app fw stb)
+target_link_libraries(17_texture_wrap wrapper app fw stb)
+target_link_libraries(18_textureClass wrapper app fw)
+target_link_libraries(19_texture_blending wrapper app fw)
+target_link_libraries(20_mipmap wrapper app fw)
+target_link_libraries(21_glm wrapper app fw)
+target_link_libraries(22_camera wrapper app fw)
+target_link_libraries(23_depthtest wrapper app fw)
+target_link_libraries(24_geometry wrapper app fw)

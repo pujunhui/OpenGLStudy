@@ -22,10 +22,6 @@ void OnKey(int key, int action, int mods) {
     std::cout << key << std::endl;
 }
 
-void prepareShader() {
-    shader = new Shader("assets/shaders/vertex.glsl", "assets/shaders/fragment_mipmap.glsl");
-}
-
 void prepareVAO() {
     //准备顶点数据数组
     float vertices[] = {
@@ -76,6 +72,10 @@ void prepareVAO() {
     GL_CALL(glBindVertexArray(0));
 }
 
+void prepareShader() {
+    shader = new Shader("assets/shaders/20_mipmap/vertex.glsl", "assets/shaders/20_mipmap/fragment.glsl");
+}
+
 void prepareTexture() {
     texture = new Texture("assets/textures/goku.jpg", 0);
 }
@@ -89,6 +89,8 @@ void render() {
 
     shader->setInt("sampler", 0);
     shader->setFloat("time", glfwGetTime());
+    shader->setInt("width", texture->getWidth());
+    shader->setInt("height", texture->getHeight());
 
     //绑定当前的vao
     GL_CALL(glBindVertexArray(vao));

@@ -1,6 +1,5 @@
 #pragma once 
 
-#include "../../glframework/core.h"
 #include "camera.h"
 #include <map>
 

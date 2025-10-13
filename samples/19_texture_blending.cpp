@@ -1,12 +1,11 @@
 #include <iostream>
 
-#include "glframework/core.h"
-#include "glframework/shader.h"
+//注意：glad头文件必须在glfw引用之前引用
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <string>
 #include "wrapper/checkError.h"
 #include "application/Application.h"
+#include "glframework/shader.h"
 #include "glframework/texture.h"
 
 GLuint vao;
@@ -22,92 +21,6 @@ void OnResize(int width, int height) {
 
 void OnKey(int key, int action, int mods) {
     std::cout << key << std::endl;
-}
-
-void prepareSingleBuffer() {
-    //1 准备顶点位置数据和颜色数据
-    float positions[] = {
-        -0.5f,-0.5f,0.0f,
-        0.5f,-0.5f,0.0f,
-        0.5f,0.5f,0.0f,
-    };
-    float colors[] = {
-        1.0f,0.0f,0.0f,
-        0.0f,1.0f,0.0f,
-        0.0f,0.0f,0.0f,
-    };
-
-    //2 为位置&颜色数据各自生成一个vbo
-    GLuint posVbo = 0, colorVbo = 0;
-    GL_CALL(glGenBuffers(1, &posVbo));
-    GL_CALL(glGenBuffers(1, &colorVbo));
-
-    //3 给两个分开的vbo各自填充数据
-    //填充positions数据
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
-    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
-    //填充colors数据
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
-    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW));
-
-    //4 生成vao并且绑定
-    GLuint vao = 0;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    //5 分别将位置/颜色属性的描述信息加入vao当中
-    //5.1描述位置属性
-    glBindBuffer(GL_ARRAY_BUFFER, posVbo);//只有绑定了posVbo，下面的属性描述才会与此vbo相关
-    glEnableVertexAttribArray(0); //激活描述信息
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-    //5.2 描述颜色属性
-    glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-    glBindVertexArray(0);
-
-    //销毁vbo
-    //GL_CALL(glDeleteBuffers(1, &posVbo));
-    //GL_CALL(glDeleteBuffers(1, &colorVbo));
-}
-
-void prepareInterleavedBuffer() {
-    //1 准备好Interleaved数据（位置+颜色）
-    float vertices[] = {
-        -0.5f,-0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
-         0.5f,-0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
-         0.5f, 0.5f, 0.0f,  0.0f, 0.0f, 0.0f,
-    };
-
-    //2 创建唯一的vbo
-    GLuint vbo = 0;
-    GL_CALL(glGenBuffers(1, &vbo));
-
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
-
-    //3 创建并绑定vao
-    GL_CALL(glGenVertexArrays(1, &vao));
-    GL_CALL(glBindVertexArray(vao));
-
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-    //4 为vao加入位置和颜色的描述信息
-    //4.1 位置描述信息
-    GL_CALL(glEnableVertexAttribArray(0));
-    GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0));
-
-    //4.2 颜色描述信息
-    GL_CALL(glEnableVertexAttribArray(1));
-    GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))));
-
-    //5 扫尾工作：解绑当前vao
-    glBindVertexArray(0);
-}
-
-void prepareShader() {
-    shader = new Shader("assets/shaders/vertex.glsl", "assets/shaders/fragment.glsl");
 }
 
 void prepareVAO() {
@@ -160,6 +73,10 @@ void prepareVAO() {
     GL_CALL(glBindVertexArray(0));
 }
 
+void prepareShader() {
+    shader = new Shader("assets/shaders/19_texture_blending/vertex.glsl", "assets/shaders/19_texture_blending/fragment.glsl");
+}
+
 void prepareTexture() {
     grassTexture = new Texture("assets/textures/grass.jpg", 0);
     landTexture = new Texture("assets/textures/land.jpg", 1);
@@ -176,7 +93,6 @@ void render() {
     shader->setInt("grassSampler", 0);
     shader->setInt("landSampler", 1);
     shader->setInt("noiseSampler", 2);
-    shader->setFloat("time", glfwGetTime());
 
     //绑定当前的vao
     GL_CALL(glBindVertexArray(vao));
@@ -202,9 +118,9 @@ int main() {
     GL_CALL(glViewport(0, 0, 800, 600));
     GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
+    prepareTexture();
     prepareShader();
     prepareVAO();
-    prepareTexture();
 
     while (app->update()) {
         render();

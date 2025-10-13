@@ -1,9 +1,6 @@
 #include <iostream>
 
 #include "glframework/core.h"
-#include <iostream>
-
-#include "glframework/core.h"
 #include "glframework/shader.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>

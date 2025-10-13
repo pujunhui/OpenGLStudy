@@ -1,9 +1,6 @@
 #include <iostream>
 
 #include "glframework/core.h"
-#include <iostream>
-
-#include "glframework/core.h"
 #include "glframework/shader.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -23,10 +20,6 @@ void OnResize(int width, int height) {
 
 void OnKey(int key, int action, int mods) {
     std::cout << key << std::endl;
-}
-
-void prepareShader() {
-    shader = new Shader("assets/shaders/vertex_glm.glsl", "assets/shaders/fragment_glm.glsl");
 }
 
 void prepareVAO() {
@@ -77,6 +70,10 @@ void prepareVAO() {
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
 
     GL_CALL(glBindVertexArray(0));
+}
+
+void prepareShader() {
+    shader = new Shader("assets/shaders/21_glm/vertex.glsl", "assets/shaders/21_glm/fragment.glsl");
 }
 
 void prepareTexture() {

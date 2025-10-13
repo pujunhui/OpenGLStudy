@@ -366,7 +366,6 @@ Geometry* Geometry::createPlane(float width, float height) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometry->mEbo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-
     glGenVertexArrays(1, &geometry->mVao);
     glBindVertexArray(geometry->mVao);
 
@@ -395,8 +394,8 @@ Geometry* Geometry::createScreenPlane() {
 
     float positions[] = {
         -1.0f, 1.0f,
-         -1.0f, -1.0f,
-         1.0f,  -1.0f,
+        -1.0f, -1.0f,
+        1.0f,  -1.0f,
         1.0f,  1.0f,
     };
 

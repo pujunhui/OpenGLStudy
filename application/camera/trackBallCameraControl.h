@@ -1,6 +1,5 @@
 #pragma once 
 
-#include "../../glframework/core.h"
 #include "cameraControl.h"
 
 class TrackBallCameraControl :public CameraControl {

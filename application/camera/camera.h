@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "../../glframework/core.h"
+#include "glframework/core.h"
 
 class Camera {
 public:
