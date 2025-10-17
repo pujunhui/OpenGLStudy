@@ -32,25 +32,21 @@ void OnKey(int key, int action, int mods) {
     std::cout << "OnKey(" << key << ", " << action << ", " << mods << ")" << std::endl;
 }
 
-void OnMouse(int botton, int action, int mods) {
+void OnMouse(int button, int action, int mods) {
     double x, y;
     app->getCursorPosition(&x, &y);
-    cameraControl->onMouse(botton, action, x, y);
-    std::cout << "OnMouse(" << botton << ", " << action << ", " << x << ", " << y << ")" << std::endl;
+    cameraControl->onMouse(button, action, x, y);
+    std::cout << "OnMouse(" << button << ", " << action << ", " << x << ", " << y << ")" << std::endl;
 }
 
 void OnCursor(double xpos, double ypos) {
-    cameraControl->onCurosr(xpos, ypos);
+    cameraControl->onCursor(xpos, ypos);
     std::cout << "OnCursor(" << xpos << ", " << ypos << ")" << std::endl;
 }
 
 void OnScroll(double offset) {
     cameraControl->onScroll(offset);
     std::cout << "OnScroll(" << offset << ")" << std::endl;
-}
-
-void prepareShader() {
-    shader = new Shader("assets/shaders/vertex_glm.glsl", "assets/shaders/fragment_glm.glsl");
 }
 
 void prepareVAO() {
@@ -103,6 +99,10 @@ void prepareVAO() {
     GL_CALL(glBindVertexArray(0));
 }
 
+void prepareShader() {
+    shader = new Shader("assets/shaders/25_camera/vertex.glsl", "assets/shaders/25_camera/fragment.glsl");
+}
+
 void prepareTexture() {
     texture = new Texture("assets/textures/goku.jpg", 0);
 }
@@ -111,8 +111,8 @@ void prepareCamera() {
     camera = new PerspectiveCamera(60.0f, (float)app->getWidth() / (float)app->getHeight(), 0.1f, 1000.0f);
     float size = 3.0f;
     //camera = new OrthographicCamera(-size, size, -size, size, size, -size); //看向的-z轴
-    //cameraControl = new TrackBallCameraControl();
-    cameraControl = new GameCameraControl();
+    cameraControl = new TrackBallCameraControl();
+    //cameraControl = new GameCameraControl();
     cameraControl->setCamera(camera);
     cameraControl->setSensitivity(0.8f);
 }
@@ -126,7 +126,7 @@ void render() {
 
     shader->setInt("sampler", 0);
 
-    shader->setMatrix4x4("transform", glm::mat3(1.0f));
+    shader->setMatrix4x4("modelMatrix", glm::mat4(1.0f));
     shader->setMatrix4x4("viewMatrix", camera->getViewMatrix());
     shader->setMatrix4x4("projectionMatrix", camera->getProjectionMatrix());
 
@@ -136,8 +136,8 @@ void render() {
     //发出绘制指令
     GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 
-    glm::mat4 transform = glm::translate(glm::mat4(1.0), glm::vec3(1.0f, 0.0f, -0.1f));
-    shader->setMatrix4x4("transform", transform);
+    glm::mat4 transform = glm::translate(glm::mat4(1.0), glm::vec3(1.0f, 0.0f, -1.0f));
+    shader->setMatrix4x4("modelMatrix", transform);
 
     //发出绘制指令
     GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
@@ -179,6 +179,15 @@ int main() {
     }
 
     app->destroy();
+
+    // 释放资源
+    delete shader;
+    delete texture;
+    delete camera;
+    delete cameraControl;
+    
+    // 清理OpenGL对象
+    GL_CALL(glDeleteVertexArrays(1, &vao));
 
     return 0;
 }

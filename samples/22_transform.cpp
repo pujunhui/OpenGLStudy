@@ -1,9 +1,6 @@
 #include <iostream>
 
 #include "glframework/core.h"
-#include <iostream>
-
-#include "glframework/core.h"
 #include "glframework/shader.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -12,58 +9,27 @@
 #include "application/Application.h"
 #include "glframework/texture.h"
 
-//引入camera+控制器
-#include "application/camera/perspectiveCamera.h"
-#include "application/camera/orthographicCamera.h"
-#include "application/camera/gameCameraControl.h"
-#include "application/camera/trackBallCameraControl.h"
-
 GLuint vao;
 Shader* shader = nullptr;
 Texture* texture = nullptr;
 
-Camera* camera = nullptr;
-CameraControl* cameraControl = nullptr;
-
 void OnResize(int width, int height) {
     GL_CALL(glViewport(0, 0, width, height));
-    std::cout << "OnResize(" << width << ", " << height << ")" << std::endl;
+    std::cout << "OnResize" << std::endl;
 }
 
 void OnKey(int key, int action, int mods) {
-    cameraControl->onKey(key, action, mods);
-    std::cout << "OnKey(" << key << ", " << action << ", " << mods << ")" << std::endl;
-}
-
-void OnMouse(int botton, int action, int mods) {
-    double x, y;
-    app->getCursorPosition(&x, &y);
-    cameraControl->onMouse(botton, action, x, y);
-    std::cout << "OnMouse(" << botton << ", " << action << ", " << x << ", " << y << ")" << std::endl;
-}
-
-void OnCursor(double xpos, double ypos) {
-    cameraControl->onCurosr(xpos, ypos);
-    std::cout << "OnCursor(" << xpos << ", " << ypos << ")" << std::endl;
-}
-
-void OnScroll(double offset) {
-    cameraControl->onScroll(offset);
-    std::cout << "OnScroll(" << offset << ")" << std::endl;
-}
-
-void prepareShader() {
-    shader = new Shader("assets/shaders/vertex_glm.glsl", "assets/shaders/fragment_glm.glsl");
+    std::cout << key << std::endl;
 }
 
 void prepareVAO() {
     //准备顶点数据数组
     float vertices[] = {
         //x    y   z       r     g    b      u    v
-        -1.0, 1.0, 0.0,  1.0f, 0.0f, 0.0f,  0.0, 1.0,   //左上
-        -1.0,-1.0, 0.0,  0.0f, 1.0f, 0.0f,  0.0, 0.0,   //左下
-         1.0,-1.0, 0.0,  0.0f, 0.0f, 1.0f,  1.0, 0.0,   //右下
-         1.0, 1.0, 0.0,  0.5f, 0.5f, 0.5f,  1.0, 1.0,   //右上
+        -0.5, 0.5, -0.9,  1.0f, 0.0f, 0.0f,  0.0, 1.0,   //左上
+        -0.5,-0.5, -0.9,  0.0f, 1.0f, 0.0f,  0.0, 0.0,   //左下
+         0.5,-0.5, -0.9,  0.0f, 0.0f, 1.0f,  1.0, 0.0,   //右下
+         0.5, 0.5, -0.9,  0.5f, 0.5f, 0.5f,  1.0, 1.0,   //右上
     };
     //准备顶点索引数组
     int indices[] = {
@@ -106,18 +72,70 @@ void prepareVAO() {
     GL_CALL(glBindVertexArray(0));
 }
 
+void prepareShader() {
+    shader = new Shader("assets/shaders/22_transform/vertex.glsl", "assets/shaders/22_transform/fragment.glsl");
+}
+
 void prepareTexture() {
     texture = new Texture("assets/textures/goku.jpg", 0);
 }
 
-void prepareCamera() {
-    camera = new PerspectiveCamera(60.0f, (float)app->getWidth() / (float)app->getHeight(), 0.1f, 1000.0f);
-    float size = 3.0f;
-    //camera = new OrthographicCamera(-size, size, -size, size, size, -size); //看向的-z轴
-    //cameraControl = new TrackBallCameraControl();
-    cameraControl = new GameCameraControl();
-    cameraControl->setCamera(camera);
-    cameraControl->setSensitivity(0.8f);
+glm::mat4 transform(1.0f);
+
+//旋转变换
+void doRotationTransform() {
+    //构建一个旋转矩阵，绕着z轴旋转45度角
+    //rotate函数:用于生成旋转矩阵
+    //bug1:rotate必须得到一个float类型的角度，c++的template
+    //bug2:rotate函数接受的不是角度(degree)，接收的弧度(radians)
+    //注意点:radians函数也是模板函数，切记要传入float类型数据，加f后缀
+    transform = glm::rotate(glm::mat4(1.0f), glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+}
+
+//平移变换
+void doTranslationTransform() {
+    transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0f, 0.0f));
+}
+
+//缩放变换
+void doScaleTransform() {
+    transform = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 1.0f));
+}
+
+//矩阵复合变换
+void doTransform() {
+    glm::mat4 rotateMat = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 translateMat = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0f, 0.0f));
+    //先旋转，再平移
+    ///transform = translateMat * rotateMat;
+
+    //先平移，再旋转
+    transform = rotateMat * translateMat;
+}
+
+float degree = 0.0f;
+float offset = 0.0f;
+
+//矩阵叠加变换实验
+void updateTransform() {
+    //更新旋转角度和平移
+    degree += 0.01f;
+    offset += 0.001f;
+
+    //目标一：旋转的矩形
+    //transform = glm::rotate(glm::mat4(1.0f), glm::radians(degree), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    //目标二：先平移再叠加旋转
+    //transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0f, 0.0f));
+    //transform = glm::rotate(transform, glm::radians(degree), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    //目标三：先旋转再叠加平移
+    //transform = glm::rotate(glm::mat4(1.0f), glm::radians(degree), glm::vec3(0.0f, 0.0f, 1.0f));
+    //transform = glm::translate(transform, glm::vec3(0.5f, 0.0f, 0.0f));
+
+    //目标四：先做一次缩放，再叠加平移
+    transform = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 1.0f));
+    transform = glm::translate(transform, glm::vec3(offset, 0.0f, 0.0f));
 }
 
 void render() {
@@ -129,10 +147,8 @@ void render() {
 
     shader->setInt("sampler", 0);
 
-    shader->setMatrix4x4("transform", glm::mat3(1.0f));
-    shader->setMatrix4x4("viewMatrix", camera->getViewMatrix());
-    shader->setMatrix4x4("projectionMatrix", camera->getProjectionMatrix());
-
+    shader->setMatrix4x4("transform", transform);
+     
     //绑定当前的vao
     GL_CALL(glBindVertexArray(vao));
 
@@ -152,9 +168,6 @@ int main() {
 
     app->setResizeCallback(OnResize);
     app->setKeyBoardCallback(OnKey);
-    app->setMouseCallback(OnMouse);
-    app->setCursorCallback(OnCursor);
-    app->setScrollCallback(OnScroll);
 
     //设置opengl视口以及清理颜色
     GL_CALL(glViewport(0, 0, 800, 600));
@@ -163,14 +176,22 @@ int main() {
     prepareShader();
     prepareVAO();
     prepareTexture();
-    prepareCamera();
+
+    //doRotationTransform();
+    //doTranslationTransform();
+    //doScaleTransform();{
+    //doTransform();
 
     while (app->update()) {
-        cameraControl->update();
+        updateTransform();
         render();
     }
 
     app->destroy();
+
+    // 释放资源
+    delete shader;
+    delete texture;
 
     return 0;
 }

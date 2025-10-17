@@ -9,7 +9,7 @@ GameCameraControl::~GameCameraControl() {
 
 }
 
-void GameCameraControl::onCurosr(double xpos, double ypos) {
+void GameCameraControl::onCursor(double xpos, double ypos) {
     float deltaX = (xpos - mCurrentX) * mSensitivity;
     float deltaY = (ypos - mCurrentY) * mSensitivity;
 

@@ -28,7 +28,7 @@ void CameraControl::onMouse(int button, int action, double xpos, double ypos) {
     }
  }
 
-void CameraControl::onCurosr(double xpos, double ypos) {
+void CameraControl::onCursor(double xpos, double ypos) {
 
 }
 

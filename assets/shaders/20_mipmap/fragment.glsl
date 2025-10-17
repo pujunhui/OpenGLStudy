@@ -5,7 +5,6 @@ in vec3 vColor;
 in vec2 vUV;
 
 uniform sampler2D sampler;
-uniform float time;
 uniform int width;
 uniform int height;
 
@@ -27,6 +26,6 @@ void main()
 	//4 计算出mipmap的采用级别
 	int level = max(int(L + 0.5), 0);
 
-	//FragColor = textureLod(sampler, uv, level);
-	FragColor = texture(sampler, vUV);
+	FragColor = textureLod(sampler, vUV, level);
+	//FragColor = texture(sampler, vUV);
 }

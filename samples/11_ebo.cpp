@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 
-//×¢Òâ£ºgladÍ·ÎÄ¼ş±ØĞëÔÚglfwÒıÓÃÖ®Ç°ÒıÓÃ
+//æ³¨æ„ï¼šgladå¤´æ–‡ä»¶å¿…é¡»åœ¨glfwå¼•ç”¨ä¹‹å‰å¼•ç”¨
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "wrapper/checkError.h"
@@ -19,7 +19,7 @@ void OnKey(int key, int action, int mods) {
 }
 
 void prepareVaoForTriangles() {
-    //1 ×¼±¸Êı¾İ
+    //1 å‡†å¤‡æ•°æ®
     float positions[] = {
         -0.5f, -0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
@@ -32,44 +32,44 @@ void prepareVaoForTriangles() {
         2, 1, 3
     };
 
-    //2 VBO´´½¨
+    //2 VBOåˆ›å»º
     GLuint posVbo = 0;
     GL_CALL(glGenBuffers(1, &posVbo));
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
-    //3 EBO´´½¨
+    //3 EBOåˆ›å»º
     GL_CALL(glGenBuffers(1, &ebo));
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
     GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
-    //4 Éú³Évao²¢°ó¶¨
+    //4 ç”Ÿæˆvaoå¹¶ç»‘å®š
     GL_CALL(glGenVertexArrays(1, &vao));
     GL_CALL(glBindVertexArray(vao));
     
-    //5 °ó¶¨VBO¡¢EBO
-    // ×¢Òâ£ºVAO¼ÇÂ¼µÄ×´Ì¬°üÀ¨£º
-    //      1¡¢¶¥µãÊôĞÔÖ¸Õë£¨Í¨¹ıglVertexAttribPointerÉèÖÃ£©
-    //      2¡¢Æô¶¯µÄ¶¥µãÊôĞÔ£¨Í¨¹ıglEnableVertexAttribArrayÉèÖÃ£©
-    //      3¡¢°ó¶¨µÄEBO£¨µ±VAO°ó¶¨Ê±µ÷ÓÃglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo)£©
+    //5 ç»‘å®šVBOã€EBO
+    // æ³¨æ„ï¼šVAOè®°å½•çš„çŠ¶æ€åŒ…æ‹¬ï¼š
+    //      1ã€é¡¶ç‚¹å±æ€§æŒ‡é’ˆï¼ˆé€šè¿‡glVertexAttribPointerè®¾ç½®ï¼‰
+    //      2ã€å¯åŠ¨çš„é¡¶ç‚¹å±æ€§ï¼ˆé€šè¿‡glEnableVertexAttribArrayè®¾ç½®ï¼‰
+    //      3ã€ç»‘å®šçš„EBOï¼ˆå½“VAOç»‘å®šæ—¶è°ƒç”¨glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo)ï¼‰
     // 
-    // ¶øglBindBuffer(GL_ARRAY_BUFFER, vbo)²¢²»»áÈÃVAO¼ÇÂ¼VBO
+    // è€ŒglBindBuffer(GL_ARRAY_BUFFER, vbo)å¹¶ä¸ä¼šè®©VAOè®°å½•VBO
     // 
-    //5.1 Ìí¼ÓÊôĞÔµÄÃèÊöĞÅÏ¢
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo)); //Ö»ÓĞ°ó¶¨ÁËposVbo£¬ÏÂÃæµÄÊôĞÔÃèÊö²Å»áÓë´ËvboÏà¹Ø
+    //5.1 æ·»åŠ å±æ€§çš„æè¿°ä¿¡æ¯
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo)); //åªæœ‰ç»‘å®šäº†posVboï¼Œä¸‹é¢çš„å±æ€§æè¿°æ‰ä¼šä¸æ­¤vboç›¸å…³
     GL_CALL(glEnableVertexAttribArray(0));
     GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL));
 
-    //5.2 Ìí¼ÓEBOµ½µ±Ç°VAOÖĞ
+    //5.2 æ·»åŠ EBOåˆ°å½“å‰VAOä¸­
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
 
     GL_CALL(glBindVertexArray(0));
 }
 
 void prepareShader() {
-    //1 Íê³ÉvsÓëfsµÄÔ´´úÂë£¬²¢ÇÒ×°Èë×Ö·û´®
+    //1 å®Œæˆvsä¸fsçš„æºä»£ç ï¼Œå¹¶ä¸”è£…å…¥å­—ç¬¦ä¸²
     const char* vertexShaderSource = 
         "#version 460 core\n"
         "layout(location = 0) in vec3 aPos;\n"
@@ -85,26 +85,26 @@ void prepareShader() {
         "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
         "}\0";
 
-    //2 ´´½¨Shader³ÌĞò£¨vs¡¢fs£©
+    //2 åˆ›å»ºShaderç¨‹åºï¼ˆvsã€fsï¼‰
     GLuint vertex, fragment;
     vertex = GL_CALL(glCreateShader(GL_VERTEX_SHADER));
     fragment = GL_CALL(glCreateShader(GL_FRAGMENT_SHADER));
 
-    //3 Îªshader³ÌĞòÊäÈëshader´úÂë
+    //3 ä¸ºshaderç¨‹åºè¾“å…¥shaderä»£ç 
     GL_CALL(glShaderSource(vertex, 1, &vertexShaderSource, NULL));
     GL_CALL(glShaderSource(fragment, 1, &fragmentShaderSource, NULL));
     
     int success = 0;
     char infoLog[1024];
-    //4 Ö´ĞĞshader´úÂë±àÒë
-    //4.1 ±àÒëvertex shader£¬²¢¼ì²é±àÒë½á¹û
+    //4 æ‰§è¡Œshaderä»£ç ç¼–è¯‘
+    //4.1 ç¼–è¯‘vertex shaderï¼Œå¹¶æ£€æŸ¥ç¼–è¯‘ç»“æœ
     GL_CALL(glCompileShader(vertex));
     GL_CALL(glGetShaderiv(vertex, GL_COMPILE_STATUS, &success));
     if (!success) {
         GL_CALL(glGetShaderInfoLog(vertex, 1024, NULL, infoLog));
         std::cout << "Error: SHADER COMPILE ERROR " << "\n" << infoLog << std::endl;
     }
-    //4.2 ±àÒëfragment shader£¬²¢¼ì²é±àÒë½á¹û
+    //4.2 ç¼–è¯‘fragment shaderï¼Œå¹¶æ£€æŸ¥ç¼–è¯‘ç»“æœ
     GL_CALL(glCompileShader(fragment));
     GL_CALL(glGetShaderiv(fragment, GL_COMPILE_STATUS, &success));
     if (!success) {
@@ -112,45 +112,45 @@ void prepareShader() {
         std::cout << "Error: SHADER COMPILE ERROR " << "\n" << infoLog << std::endl;
     }
     
-    //5 ´´½¨Ò»¸öProgram¿Ç×Ó
+    //5 åˆ›å»ºä¸€ä¸ªProgramå£³å­
     program = GL_CALL(glCreateProgram());
 
-    //6 ½«vsÓëfs±àÒëºÃµÄ½á¹û·Åµ½programÕâ¸ö¿Ç×ÓÀï
+    //6 å°†vsä¸fsç¼–è¯‘å¥½çš„ç»“æœæ”¾åˆ°programè¿™ä¸ªå£³å­é‡Œ
     GL_CALL(glAttachShader(program, vertex));
     GL_CALL(glAttachShader(program, fragment));
 
-    //7 Ö´ĞĞprogramµÄÁ´½Ó²Ù×÷£¬ĞÎ³É×îÖÕ¿ÉÖ´ĞĞshader³ÌĞò
+    //7 æ‰§è¡Œprogramçš„é“¾æ¥æ“ä½œï¼Œå½¢æˆæœ€ç»ˆå¯æ‰§è¡Œshaderç¨‹åº
     GL_CALL(glLinkProgram(program));
-    //7.1 ¼ì²éÁ´½Ó´íÎó
+    //7.1 æ£€æŸ¥é“¾æ¥é”™è¯¯
     GL_CALL(glGetProgramiv(program, GL_LINK_STATUS, &success));
     if (!success) {
         GL_CALL(glGetProgramInfoLog(program, 1024, NULL, infoLog));
         std::cout << "Error: PROGRAM COMPILE ERROR " << "\n" << infoLog << std::endl;
     }
 
-    //8 ÇåÀí
+    //8 æ¸…ç†
     GL_CALL(glDeleteShader(vertex));
     GL_CALL(glDeleteShader(fragment));
 }
 
 void render() {
-    //Èç¹ûrender×îºó²»½â°óvao£¬Õâ¾ä´úÂë»áµ¼ÖÂ³ÌĞòÒì³£
+    //å¦‚æœrenderæœ€åä¸è§£ç»‘vaoï¼Œè¿™å¥ä»£ç ä¼šå¯¼è‡´ç¨‹åºå¼‚å¸¸
     //GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
-    //Ö´ĞĞopengl»­²¼ÇåÀí²Ù×÷
+    //æ‰§è¡Œopenglç”»å¸ƒæ¸…ç†æ“ä½œ
     GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
 
-    //1 °ó¶¨µ±Ç°program
+    //1 ç»‘å®šå½“å‰program
     GL_CALL(glUseProgram(program));
 
-    //2 °ó¶¨µ±Ç°vao
+    //2 ç»‘å®šå½“å‰vao
     GL_CALL(glBindVertexArray(vao));
 
-    //3 ·¢³ö»æÖÆÖ¸Áî
+    //3 å‘å‡ºç»˜åˆ¶æŒ‡ä»¤
     //GL_CALL(glDrawArrays(GL_TRIANGLES, 0, 6));
     GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 
-    //4 ½â°óµ±Ç°vao£¬±ÜÃâÏÂÒ»Ö¡Îó²Ù×÷vao
+    //4 è§£ç»‘å½“å‰vaoï¼Œé¿å…ä¸‹ä¸€å¸§è¯¯æ“ä½œvao
     GL_CALL(glBindVertexArray(0));
 }
 
@@ -162,7 +162,7 @@ int main() {
     app->setResizeCallback(OnResize);
     app->setKeyBoardCallback(OnKey);
 
-    //ÉèÖÃopenglÊÓ¿ÚÒÔ¼°ÇåÀíÑÕÉ«
+    //è®¾ç½®openglè§†å£ä»¥åŠæ¸…ç†é¢œè‰²
     GL_CALL(glViewport(0, 0, 800, 600));
     GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 

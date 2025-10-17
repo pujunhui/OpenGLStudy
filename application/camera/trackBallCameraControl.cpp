@@ -9,7 +9,7 @@ TrackBallCameraControl::~TrackBallCameraControl() {
 
 }
 
-void TrackBallCameraControl::onCurosr(double xpos, double ypos) {
+void TrackBallCameraControl::onCursor(double xpos, double ypos) {
     if (mLeftMouseDown) {
         //调整相机的各类参数
         //1 计算经线和纬线旋转的增量角度(正负都有可能)
@@ -34,6 +34,33 @@ void TrackBallCameraControl::onCurosr(double xpos, double ypos) {
 
 void TrackBallCameraControl::onScroll(double offset) {
     mCamera->scale(mScaleSpeed * offset);
+}
+
+void TrackBallCameraControl::update() {
+    //最终移动方向
+    glm::vec3 direction(0.0f);
+
+    auto front = glm::cross(mCamera->mUp, mCamera->mRight);
+    auto right = mCamera->mRight;
+
+    if (mKeyMap[GLFW_KEY_W]) {
+        direction += front;
+    }
+    if (mKeyMap[GLFW_KEY_S]) {
+        direction -= front;
+    }
+    if (mKeyMap[GLFW_KEY_A]) {
+        direction -= right;
+    }
+    if (mKeyMap[GLFW_KEY_D]) {
+        direction += right;
+    }
+
+    //此时direction有可能不为1的长度，也可能是0的长度
+    if (glm::length(direction) != 0) {
+        direction = glm::normalize(direction);
+        mCamera->mPosition += direction * mSpeed;
+    }
 }
 
 void TrackBallCameraControl::pitch(float angle) {

@@ -1,6 +1,6 @@
 #include <iostream>
 
-//×¢Òâ£ºgladÍ·ÎÄ¼ş±ØĞëÔÚglfwÒıÓÃÖ®Ç°ÒıÓÃ
+//æ³¨æ„ï¼šgladå¤´æ–‡ä»¶å¿…é¡»åœ¨glfwå¼•ç”¨ä¹‹å‰å¼•ç”¨
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "wrapper/checkError.h"
@@ -16,17 +16,17 @@ void OnKey(int key, int action, int mods) {
 }
 
 void prepareVBO() {
-    // 1 ´´½¨Ò»¸övbo£¬´ËÊ±²¢Î´·ÖÅäÄÚ´æ
+    // 1 åˆ›å»ºä¸€ä¸ªvboï¼Œæ­¤æ—¶å¹¶æœªåˆ†é…å†…å­˜
     GLuint vbo = 0;
     GL_CALL(glGenBuffers(1, &vbo));
 
-    //2 Ïú»ÙÒ»¸övbo
+    //2 é”€æ¯ä¸€ä¸ªvbo
     GL_CALL(glDeleteBuffers(1, &vbo));
 
-    //3 ´´½¨n¸övbo
-    GLuint vboArr[] = { 0, 0, 0 }; 
+    //3 åˆ›å»ºnä¸ªvbo
+    GLuint vboArr[] = { 0, 0, 0 };
     GL_CALL(glGenBuffers(3, vboArr));
-    //4 Ïú»Ùn¸övbo
+    //4 é”€æ¯nä¸ªvbo
     GL_CALL(glDeleteBuffers(1, vboArr));
 }
 
@@ -36,20 +36,20 @@ void prepare() {
         0.5f, -0.5f, 0.0f,
         0.0f, 0.5f, 0.0f
     };
-    //1 Éú³ÉÒ»¸övbo
+    //1 ç”Ÿæˆä¸€ä¸ªvbo
     GLuint vbo = 0;
     GL_CALL(glGenBuffers(1, &vbo));
 
-    //2 °ó¶¨µ±Ç°vbo£¬µ½opengl×´Ì¬»úµÄµ±Ç°vbo²å²ÛÉÏ
-    //GL_ARRAY_BUFFER£º±íÊ¾µ±Ç°vboÕâ¸ö²å²Û
+    //2 ç»‘å®šå½“å‰vboåˆ°OpenGlçŠ¶æ€æœºçš„vboæ’æ§½ä¸Š
+    //GL_ARRAY_BUFFERï¼šè¡¨ç¤ºå½“å‰vboè¿™ä¸ªæ’æ§½
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
 
-    //3 Ïòµ±Ç°vbo´«ÊäÊı¾İ£¬Ò²ÊÇÔÚ¿ª±ÙÏÔ´æ
+    //3 å‘å½“å‰vboä¼ è¾“æ•°æ®ï¼Œä¹Ÿæ˜¯åœ¨å¼€è¾Ÿæ˜¾å­˜
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
 }
 
 void prepareSingleBuffer() {
-    //1 ×¼±¸¶¥µãÎ»ÖÃÊı¾İÓëÑÕÉ«Êı¾İ
+    //1 å‡†å¤‡é¡¶ç‚¹ä½ç½®æ•°æ®ä¸é¢œè‰²æ•°æ®
     float positions[] = {
         -0.5f, -0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
@@ -61,17 +61,17 @@ void prepareSingleBuffer() {
         0.0f, 0.0f, 1.0f
     };
 
-    //2 ÎªÎ»ÖÃ&ÑÕÉ«Êı¾İ¸÷×ÔÉú³ÉÒ»¸övbo
+    //2 ä¸ºä½ç½®&é¢œè‰²æ•°æ®å„è‡ªç”Ÿæˆä¸€ä¸ªvbo
     GLuint posVbo = 0, colorVbo = 0;
     GL_CALL(glGenBuffers(1, &posVbo));
     GL_CALL(glGenBuffers(1, &colorVbo));
 
-    //3 ¸øÁ½¸ö·Ö¿ªµÄvbo¸÷×ÔÌî³äÊı¾İ
-    //positionsÌî³äÊı¾İ
+    //3 ç»™ä¸¤ä¸ªåˆ†å¼€çš„vboå„è‡ªå¡«å……æ•°æ®
+    //positionså¡«å……æ•°æ®
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
 
-    //colorsÌî³äÊı¾İ
+    //colorså¡«å……æ•°æ®
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW));
 }
@@ -83,14 +83,14 @@ void prepareInterleavedBuffer() {
          0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f
     };
 
-    //1 Éú³ÉÒ»¸övbo
+    //1 ç”Ÿæˆä¸€ä¸ªvbo
     GLuint vbo = 0;
     GL_CALL(glGenBuffers(1, &vbo));
 
-    //2 °ó¶¨µ±Ç°vbo£¬µ½opengl×´Ì¬»úµÄµ±Ç°vbo²å²ÛÉÏ
+    //2 ç»‘å®šå½“å‰vboï¼Œåˆ°openglçŠ¶æ€æœºçš„å½“å‰vboæ’æ§½ä¸Š
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
 
-    //3 Ïòµ±Ç°vbo´«ÊäÊı¾İ£¬Ò²ÊÇÔÚ¿ª±ÙÏÔ´æ
+    //3 å‘å½“å‰vboä¼ è¾“æ•°æ®ï¼Œä¹Ÿæ˜¯åœ¨å¼€è¾Ÿæ˜¾å­˜
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
 }
 
@@ -102,7 +102,7 @@ int main() {
     app->setResizeCallback(OnResize);
     app->setKeyBoardCallback(OnKey);
 
-    //ÉèÖÃopenglÊÓ¿ÚÒÔ¼°ÇåÀíÑÕÉ«
+    //è®¾ç½®openglè§†å£ä»¥åŠæ¸…ç†é¢œè‰²
     GL_CALL(glViewport(0, 0, 800, 600));
     GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
@@ -112,7 +112,7 @@ int main() {
     prepareInterleavedBuffer();
 
     while (app->update()) {
-        //Ö´ĞĞopengl»­²¼ÇåÀí²Ù×÷
+        //æ‰§è¡Œopenglç”»å¸ƒæ¸…ç†æ“ä½œ
         GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
     }
 

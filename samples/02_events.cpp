@@ -2,59 +2,59 @@
 
 #include <GLFW/glfw3.h>
 
-//ÉùÃ÷ÇÒÊµÏÖÒ»¸öÏìÓ¦´°Ìå´óĞ¡±ä»¯µÄº¯Êı
+//å£°æ˜ä¸”å®ç°ä¸€ä¸ªå“åº”çª—ä½“å¤§å°å˜åŒ–çš„å‡½æ•°
 void frameBufferSizeCallback(GLFWwindow* window, int width, int height) {
-    std::cout << "´°Ìå×îĞÂ´óĞ¡£º" << width << ", " << height << std::endl;
+    std::cout << "çª—ä½“æœ€æ–°å¤§å°ï¼š" << width << ", " << height << std::endl;
 }
 
-//ÉùÃ÷ÇÒÊµÏÖÒ»¸ö¼üÅÌÏûÏ¢»Øµ÷º¯Êı
+//å£°æ˜ä¸”å®ç°ä¸€ä¸ªé”®ç›˜æ¶ˆæ¯å›è°ƒå‡½æ•°
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    std::cout << "°´ÏÂÁË£º" << key << std::endl;
-    std::cout << "action£º" << action << std::endl;
-    std::cout << "mods£º" << mods << std::endl;
+    std::cout << "æŒ‰ä¸‹äº†ï¼š" << key << std::endl;
+    std::cout << "actionï¼š" << action << std::endl;
+    std::cout << "modsï¼š" << mods << std::endl;
 }
 
 int main() {
-    //1 ³õÊ¼»¯GLFW»ù±¾»·¾³
+    //1 åˆå§‹åŒ–GLFWåŸºæœ¬ç¯å¢ƒ
     glfwInit();
-    //1.1 ÉèÖÃOpenGLÖ÷°æ±¾ºÅ¡¢´Î°æ±¾ºÅ
+    //1.1 è®¾ç½®OpenGLä¸»ç‰ˆæœ¬å·ã€æ¬¡ç‰ˆæœ¬å·
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    //1.2 ÉèÖÃOpenGLÆôÓÃºËĞÄÄ£Ê½£¨·ÇÁ¢¼´äÖÈ¾Ä£Ê½£©
+    //1.2 è®¾ç½®OpenGLå¯ç”¨æ ¸å¿ƒæ¨¡å¼ï¼ˆéç«‹å³æ¸²æŸ“æ¨¡å¼ï¼‰
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    //2 ´´½¨´°Ìå¶ÔÏó
+    //2 åˆ›å»ºçª—ä½“å¯¹è±¡
     GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGLStudy", NULL, NULL);
     if (window == NULL) {
         return false;
     }
 
-    //ÉèÖÃµ±Ç°´°Ìå¶ÔÏóÎªOpenGLµÄ»æÖÆÎèÌ¨
+    //è®¾ç½®å½“å‰çª—ä½“å¯¹è±¡ä¸ºOpenGLçš„ç»˜åˆ¶èˆå°
     glfwMakeContextCurrent(window);
 
-    //´°¿Ú´óĞ¡¸Ä±ä»Øµ÷
+    //çª—å£å¤§å°æ”¹å˜å›è°ƒ
     glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
 
-    //¼üÅÌ»Øµ÷
+    //é”®ç›˜å›è°ƒ
     glfwSetKeyCallback(window, keyCallback);
 
-    ////Êó±êµã»÷ÊÂ¼ş»Øµ÷
+    ////é¼ æ ‡ç‚¹å‡»äº‹ä»¶å›è°ƒ
     //glfwSetMouseButtonCallback(window, mouseCallback);
 
-    ////Êó±êÒÆ¶¯ÊÂ¼ş»Øµ÷
+    ////é¼ æ ‡ç§»åŠ¨äº‹ä»¶å›è°ƒ
     //glfwSetCursorPosCallback(window, cursorCallback);
 
-    ////Êó±ê¹öÂÖÊÂ¼ş»Øµ÷
+    ////é¼ æ ‡æ»šè½®äº‹ä»¶å›è°ƒ
     //glfwSetScrollCallback(window, scrollCallback);
 
     while (!glfwWindowShouldClose(window)) {
-        //½ÓÊÕ²¢·Ö·¢´°ÌåÏûÏ¢
-        //¼ì²éÏûÏ¢¶ÓÁĞÊÇ·ñÓĞĞèÒª´¦ÀíµÄÊó±ê¡¢¼üÅÌµÈÏûÏ¢
-        //Èç¹ûÓĞµÄ»°¾Í½«ÏûÏ¢ÅúÁ¿´¦Àí£¬Çå¿Õ¶ÓÁĞ
+        //æ¥æ”¶å¹¶åˆ†å‘çª—ä½“æ¶ˆæ¯
+        //æ£€æŸ¥æ¶ˆæ¯é˜Ÿåˆ—æ˜¯å¦æœ‰éœ€è¦å¤„ç†çš„é¼ æ ‡ã€é”®ç›˜ç­‰æ¶ˆæ¯
+        //å¦‚æœæœ‰çš„è¯å°±å°†æ¶ˆæ¯æ‰¹é‡å¤„ç†ï¼Œæ¸…ç©ºé˜Ÿåˆ—
         glfwPollEvents();
     }
 
-    //ÍË³ö³ÌĞòÇ°×öÏà¹ØÇåÀí
+    //é€€å‡ºç¨‹åºå‰åšç›¸å…³æ¸…ç†
     glfwTerminate();
 
     return 0;

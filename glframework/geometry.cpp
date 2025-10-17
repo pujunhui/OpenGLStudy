@@ -40,7 +40,7 @@ Geometry::Geometry(
 
     glBindBuffer(GL_ARRAY_BUFFER, mUvVbo);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, mNormalVbo);
     glEnableVertexAttribArray(2);
@@ -208,7 +208,7 @@ Geometry* Geometry::createBox(float size) {
 
     glBindBuffer(GL_ARRAY_BUFFER, uvVbo);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, normalVbo);
     glEnableVertexAttribArray(2);
@@ -301,7 +301,7 @@ Geometry* Geometry::createSphere(float radius) {
 
     glBindBuffer(GL_ARRAY_BUFFER, uvVbo);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, normalVbo);
     glEnableVertexAttribArray(2);
@@ -393,10 +393,10 @@ Geometry* Geometry::createScreenPlane() {
     geometry->mIndicesCount = 6;
 
     float positions[] = {
-        -1.0f, 1.0f,
-        -1.0f, -1.0f,
-        1.0f,  -1.0f,
-        1.0f,  1.0f,
+        -1.0f,  1.0f, 0.0f,
+        -1.0f, -1.0f, 0.0f,
+         1.0f, -1.0f, 0.0f,
+         1.0f,  1.0f, 0.0f,
     };
 
     float uvs[] = {
@@ -406,12 +406,19 @@ Geometry* Geometry::createScreenPlane() {
         1.0f, 1.0f
     };
 
+    float normals[] = {
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+    };
+
     unsigned int indices[] = {
         0, 1, 2,
         0, 2, 3
     };
 
-    GLuint& posVbo = geometry->mPosVbo, uvVbo = geometry->mUvVbo;
+    GLuint& posVbo = geometry->mPosVbo, uvVbo = geometry->mUvVbo, normalVbo = geometry->mNormalVbo;
     glGenBuffers(1, &posVbo);
     glBindBuffer(GL_ARRAY_BUFFER, posVbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
@@ -419,6 +426,10 @@ Geometry* Geometry::createScreenPlane() {
     glGenBuffers(1, &uvVbo);
     glBindBuffer(GL_ARRAY_BUFFER, uvVbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(uvs), uvs, GL_STATIC_DRAW);
+
+    glGenBuffers(1, &normalVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, normalVbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(normals), normals, GL_STATIC_DRAW);
 
     glGenBuffers(1, &geometry->mEbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometry->mEbo);
@@ -429,14 +440,19 @@ Geometry* Geometry::createScreenPlane() {
 
     glBindBuffer(GL_ARRAY_BUFFER, posVbo);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, uvVbo);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
+    glBindBuffer(GL_ARRAY_BUFFER, normalVbo);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometry->mEbo);
 
     glBindVertexArray(0);
+
     return geometry;
 }

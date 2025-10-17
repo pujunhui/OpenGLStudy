@@ -24,6 +24,7 @@ Texture::Texture(const std::string& path, unsigned int unit) {
 
     //3 传输纹理数据,开辟显存
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    
     //自动生成mipmap
     glGenerateMipmap(GL_TEXTURE_2D);
 

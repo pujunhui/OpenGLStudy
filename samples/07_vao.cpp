@@ -1,10 +1,17 @@
 #include <iostream>
 
-//×¢Òâ£ºgladÍ·ÎÄ¼ş±ØĞëÔÚglfwÒıÓÃÖ®Ç°ÒıÓÃ
+//æ³¨æ„ï¼šgladå¤´æ–‡ä»¶å¿…é¡»åœ¨glfwå¼•ç”¨ä¹‹å‰å¼•ç”¨
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "wrapper/checkError.h"
 #include "application/Application.h"
+
+/**
+* VAOè®°å½•çš„çŠ¶æ€åŒ…æ‹¬ï¼š
+*     é¡¶ç‚¹å±æ€§æŒ‡é’ˆï¼ˆé€šè¿‡glVertexAttribPointerè®¾ç½®ï¼‰
+*     å¯ç”¨çš„é¡¶ç‚¹å±æ€§ï¼ˆé€šè¿‡glEnableVertexAttribArrayï¼‰
+*     ç»‘å®šçš„EBOï¼ˆå½“VAOç»‘å®šæ—¶è°ƒç”¨glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo)ï¼‰
+*/
 
 void OnResize(int width, int height) {
     GL_CALL(glViewport(0, 0, width, height));
@@ -16,7 +23,7 @@ void OnKey(int key, int action, int mods) {
 }
 
 void prepareSingleBuffer() {
-    //1 ×¼±¸¶¥µãÎ»ÖÃÊı¾İÓëÑÕÉ«Êı¾İ
+    //1 å‡†å¤‡é¡¶ç‚¹ä½ç½®æ•°æ®ä¸é¢œè‰²æ•°æ®
     float positions[] = {
         -0.5f, -0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
@@ -28,32 +35,32 @@ void prepareSingleBuffer() {
         0.0f, 0.0f, 1.0f
     };
 
-    //2 ÎªÎ»ÖÃ&ÑÕÉ«Êı¾İ¸÷×ÔÉú³ÉÒ»¸övbo
+    //2 ä¸ºä½ç½®&é¢œè‰²æ•°æ®å„è‡ªç”Ÿæˆä¸€ä¸ªvbo
     GLuint posVbo = 0, colorVbo = 0;
     GL_CALL(glGenBuffers(1, &posVbo));
     GL_CALL(glGenBuffers(1, &colorVbo));
 
-    //3 ¸øÁ½¸ö·Ö¿ªµÄvbo¸÷×ÔÌî³äÊı¾İ
-    //positionsÌî³äÊı¾İ
+    //3 ç»™ä¸¤ä¸ªåˆ†å¼€çš„vboå„è‡ªå¡«å……æ•°æ®
+    //positionså¡«å……æ•°æ®
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
 
-    //colorsÌî³äÊı¾İ
+    //colorså¡«å……æ•°æ®
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW));
 
-    //4 Éú³Évao²¢°ó¶¨
+    //4 ç”Ÿæˆvaoå¹¶ç»‘å®š
     GLuint vao = 0;
     GL_CALL(glGenVertexArrays(1, &vao));
     GL_CALL(glBindVertexArray(vao));
     
-    //5 ·Ö±ğ½«Î»ÖÃ/ÑÕÉ«ÊôĞÔµÄÃèÊöĞÅÏ¢¼ÓÈëvaoµ±ÖĞ
-    //5.1ÃèÊöÎ»ÖÃÊôĞÔ
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo)); //Ö»ÓĞ°ó¶¨ÁËposVbo£¬ÏÂÃæµÄÊôĞÔÃèÊö²Å»áÓë´ËvboÏà¹Ø
+    //5 åˆ†åˆ«å°†ä½ç½®/é¢œè‰²å±æ€§çš„æè¿°ä¿¡æ¯åŠ å…¥vaoå½“ä¸­
+    //5.1æè¿°ä½ç½®å±æ€§
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo)); //åªæœ‰ç»‘å®šäº†posVboï¼Œä¸‹é¢çš„å±æ€§æè¿°æ‰ä¼šä¸æ­¤vboç›¸å…³
     GL_CALL(glEnableVertexAttribArray(0));
     GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL));
 
-    //5.2ÃèÊöÑÕÉ«ÊôĞÔ
+    //5.2æè¿°é¢œè‰²å±æ€§
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
     GL_CALL(glEnableVertexAttribArray(1));
     GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL));
@@ -68,28 +75,28 @@ void prepareInterleavedBuffer() {
          0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f
     };
 
-    //1 Éú³ÉÒ»¸övbo
+    //1 ç”Ÿæˆä¸€ä¸ªvbo
     GLuint vbo = 0;
     GL_CALL(glGenBuffers(1, &vbo));
 
-    //2 °ó¶¨µ±Ç°vbo£¬µ½opengl×´Ì¬»úµÄµ±Ç°vbo²å²ÛÉÏ
+    //2 ç»‘å®šå½“å‰vboï¼Œåˆ°openglçŠ¶æ€æœºçš„å½“å‰vboæ’æ§½ä¸Š
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
 
-    //3 Ïòµ±Ç°vbo´«ÊäÊı¾İ£¬Ò²ÊÇÔÚ¿ª±ÙÏÔ´æ
+    //3 å‘å½“å‰vboä¼ è¾“æ•°æ®ï¼Œä¹Ÿæ˜¯åœ¨å¼€è¾Ÿæ˜¾å­˜
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
 
-    //4 Éú³Évao²¢°ó¶¨
+    //4 ç”Ÿæˆvaoå¹¶ç»‘å®š
     GLuint vao = 0;
     GL_CALL(glGenVertexArrays(1, &vao));
     GL_CALL(glBindVertexArray(vao));
 
-    //5 ·Ö±ğ½«Î»ÖÃ/ÑÕÉ«ÊôĞÔµÄÃèÊöĞÅÏ¢¼ÓÈëvaoµ±ÖĞ
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo)); //Ö»ÓĞ°ó¶¨ÁËposVbo£¬ÏÂÃæµÄÊôĞÔÃèÊö²Å»áÓë´ËvboÏà¹Ø
+    //5 åˆ†åˆ«å°†ä½ç½®/é¢œè‰²å±æ€§çš„æè¿°ä¿¡æ¯åŠ å…¥vaoå½“ä¸­
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo)); //åªæœ‰ç»‘å®šäº†posVboï¼Œä¸‹é¢çš„å±æ€§æè¿°æ‰ä¼šä¸æ­¤vboç›¸å…³
 
-    //5.1ÃèÊöÎ»ÖÃÊôĞÔ
+    //5.1æè¿°ä½ç½®å±æ€§
     GL_CALL(glEnableVertexAttribArray(0));
     GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0));
-    //5.2ÃèÊöÑÕÉ«ÊôĞÔ
+    //5.2æè¿°é¢œè‰²å±æ€§
     GL_CALL(glEnableVertexAttribArray(1));
     GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))));
 
@@ -104,7 +111,7 @@ int main() {
     app->setResizeCallback(OnResize);
     app->setKeyBoardCallback(OnKey);
 
-    //ÉèÖÃopenglÊÓ¿ÚÒÔ¼°ÇåÀíÑÕÉ«
+    //è®¾ç½®openglè§†å£ä»¥åŠæ¸…ç†é¢œè‰²
     GL_CALL(glViewport(0, 0, 800, 600));
     GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
@@ -112,7 +119,7 @@ int main() {
     prepareInterleavedBuffer();
 
     while (app->update()) {
-        //Ö´ĞĞopengl»­²¼ÇåÀí²Ù×÷
+        //æ‰§è¡Œopenglç”»å¸ƒæ¸…ç†æ“ä½œ
         GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
     }
 

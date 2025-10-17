@@ -15,48 +15,48 @@ using ScrollCallback = void(*)(double offset);
 
 class Application {
 private:
-	//全局唯一的静态变量实例
-	static Application* mInstance;
-	//私有构造方法
-	Application();
+    //全局唯一的静态变量实例
+    static Application* mInstance;
+    //私有构造方法
+    Application();
 
 public:
-	~Application();
-	
-	//用于访问实例的静态函数
-	static Application* getInstance();
+    ~Application();
 
-	bool init(const int& width = 800, const int& height = 600);
+    //用于访问实例的静态函数
+    static Application* getInstance();
 
-	bool update();
+    bool init(const int& width = 800, const int& height = 600);
 
-	void destroy();
+    bool update();
 
-	uint32_t getWidth()const { return mWidth; }
-	uint32_t getHeight()const { return mHeight; }
+    void destroy();
+
+    uint32_t getWidth()const { return mWidth; }
+    uint32_t getHeight()const { return mHeight; }
     void getCursorPosition(double* x, double* y);
 
-	void setResizeCallback(ResizeCallback callback) { mResizeCallback = callback; }
-	void setKeyBoardCallback(KeyBoardCallback callback) { mKeyBoardCallback = callback; }
-	void setMouseCallback(MouseCallback callback) { mMouseCallback = callback; }
-	void setCursorCallback(CursorCallback callback) { mCursorCallback = callback; }
-	void setScrollCallback(ScrollCallback callback) { mScrollCallback = callback; }
+    void setResizeCallback(ResizeCallback callback) { mResizeCallback = callback; }
+    void setKeyBoardCallback(KeyBoardCallback callback) { mKeyBoardCallback = callback; }
+    void setMouseCallback(MouseCallback callback) { mMouseCallback = callback; }
+    void setCursorCallback(CursorCallback callback) { mCursorCallback = callback; }
+    void setScrollCallback(ScrollCallback callback) { mScrollCallback = callback; }
 
 private:
-	//C++类内函数指针
-	static void frameBufferSizeCallback(GLFWwindow* window, int width, int height);
-	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	static void mouseCallback(GLFWwindow* window, int botton, int action, int mods);
+    //C++类内函数指针
+    static void frameBufferSizeCallback(GLFWwindow* window, int width, int height);
+    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void mouseCallback(GLFWwindow* window, int botton, int action, int mods);
     static void cursorCallback(GLFWwindow* window, double xpos, double ypos);
     static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 private:
-	uint32_t mWidth{ 0 };
-	uint32_t mHeight{ 0 };
-	GLFWwindow* mWindow{ nullptr };
+    uint32_t mWidth{ 0 };
+    uint32_t mHeight{ 0 };
+    GLFWwindow* mWindow{ nullptr };
 
-	ResizeCallback mResizeCallback{ nullptr };
-	KeyBoardCallback mKeyBoardCallback{ nullptr };
+    ResizeCallback mResizeCallback{ nullptr };
+    KeyBoardCallback mKeyBoardCallback{ nullptr };
     MouseCallback mMouseCallback{ nullptr };
     CursorCallback mCursorCallback{ nullptr };
     ScrollCallback mScrollCallback{ nullptr };

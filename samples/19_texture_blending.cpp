@@ -128,5 +128,11 @@ int main() {
 
     app->destroy();
 
+    // 释放资源
+    delete shader;
+    delete grassTexture;
+    delete landTexture;
+    delete noiseTexture;
+
     return 0;
 }

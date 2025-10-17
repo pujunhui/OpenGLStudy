@@ -34,15 +34,15 @@ void OnKey(int key, int action, int mods) {
     std::cout << "OnKey(" << key << ", " << action << ", " << mods << ")" << std::endl;
 }
 
-void OnMouse(int botton, int action, int mods) {
+void OnMouse(int button, int action, int mods) {
     double x, y;
     app->getCursorPosition(&x, &y);
-    cameraControl->onMouse(botton, action, x, y);
-    std::cout << "OnMouse(" << botton << ", " << action << ", " << x << ", " << y << ")" << std::endl;
+    cameraControl->onMouse(button, action, x, y);
+    std::cout << "OnMouse(" << button << ", " << action << ", " << x << ", " << y << ")" << std::endl;
 }
 
 void OnCursor(double xpos, double ypos) {
-    cameraControl->onCurosr(xpos, ypos);
+    cameraControl->onCursor(xpos, ypos);
     std::cout << "OnCursor(" << xpos << ", " << ypos << ")" << std::endl;
 }
 
@@ -51,13 +51,13 @@ void OnScroll(double offset) {
     std::cout << "OnScroll(" << offset << ")" << std::endl;
 }
 
-void prepareShader() {
-    shader = new Shader("assets/shaders/vertex_geometry.glsl", "assets/shaders/fragment_glm.glsl");
+void prepareVAO() {
+    geometry = Geometry::createSphere(4.0f);
+    //geometry = Geometry::createScreenPlane();
 }
 
-void prepareVAO() {
-    //geometry = Geometry::createSphere(4.0f);
-    geometry = Geometry::createScreenPlane();
+void prepareShader() {
+    shader = new Shader("assets/shaders/27_geometry/vertex.glsl", "assets/shaders/27_geometry/fragment.glsl");
 }
 
 void prepareTexture() {
@@ -83,7 +83,7 @@ void render() {
 
     shader->setInt("sampler", 0);
 
-    shader->setMatrix4x4("transform", glm::mat3(1.0f));
+    shader->setMatrix4x4("modelMatrix", glm::mat4(1.0f));
     shader->setMatrix4x4("viewMatrix", camera->getViewMatrix());
     shader->setMatrix4x4("projectionMatrix", camera->getProjectionMatrix());
 
@@ -132,6 +132,13 @@ int main() {
     }
 
     app->destroy();
+
+    // 释放资源
+    delete geometry;  // Geometry析构函数会清理VAO/VBO/EBO
+    delete shader;
+    delete texture;
+    delete camera;
+    delete cameraControl;
 
     return 0;
 }

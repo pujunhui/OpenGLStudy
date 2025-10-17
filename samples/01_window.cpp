@@ -4,31 +4,31 @@
 
 
 int main() {
-    //1 ³õÊ¼»¯GLFW»ù±¾»·¾³
+    //1 åˆå§‹åŒ–GLFWåŸºæœ¬çŽ¯å¢ƒ
     glfwInit();
-    //1.1 ÉèÖÃOpenGLÖ÷°æ±¾ºÅ¡¢´Î°æ±¾ºÅ
+    //1.1 è®¾ç½®OpenGLä¸»ç‰ˆæœ¬å·ã€æ¬¡ç‰ˆæœ¬å·
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    //1.2 ÉèÖÃOpenGLÆôÓÃºËÐÄÄ£Ê½£¨·ÇÁ¢¼´äÖÈ¾Ä£Ê½£©
+    //1.2 è®¾ç½®OpenGLå¯ç”¨æ ¸å¿ƒæ¨¡å¼ï¼ˆéžç«‹å³æ¸²æŸ“æ¨¡å¼ï¼‰
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    //2 ´´½¨´°Ìå¶ÔÏó
+    //2 åˆ›å»ºçª—ä½“å¯¹è±¡
     GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGLStudy", NULL, NULL);
     if (window == NULL) {
         return false;
     }
 
-    //ÉèÖÃµ±Ç°´°Ìå¶ÔÏóÎªOpenGLµÄ»æÖÆÎèÌ¨
+    //è®¾ç½®å½“å‰çª—ä½“å¯¹è±¡ä¸ºOpenGLçš„ç»˜åˆ¶èˆžå°
     glfwMakeContextCurrent(window);
 
     while (!glfwWindowShouldClose(window)) {
-        //½ÓÊÕ²¢·Ö·¢´°ÌåÏûÏ¢
-        //¼ì²éÏûÏ¢¶ÓÁÐÊÇ·ñÓÐÐèÒª´¦ÀíµÄÊó±ê¡¢¼üÅÌµÈÏûÏ¢
-        //Èç¹ûÓÐµÄ»°¾Í½«ÏûÏ¢ÅúÁ¿´¦Àí£¬Çå¿Õ¶ÓÁÐ
+        //æŽ¥æ”¶å¹¶åˆ†å‘çª—ä½“æ¶ˆæ¯
+        //æ£€æŸ¥æ¶ˆæ¯é˜Ÿåˆ—æ˜¯å¦æœ‰éœ€è¦å¤„ç†çš„é¼ æ ‡ã€é”®ç›˜ç­‰æ¶ˆæ¯
+        //å¦‚æžœæœ‰çš„è¯å°±å°†æ¶ˆæ¯æ‰¹é‡å¤„ç†ï¼Œæ¸…ç©ºé˜Ÿåˆ—
         glfwPollEvents();
     }
 
-    //ÍË³ö³ÌÐòÇ°×öÏà¹ØÇåÀí
+    //é€€å‡ºç¨‹åºå‰åšç›¸å…³æ¸…ç†
     glfwTerminate();
 
     return 0;

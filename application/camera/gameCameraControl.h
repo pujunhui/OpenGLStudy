@@ -7,16 +7,17 @@ public:
 	GameCameraControl();
 	~GameCameraControl();
 
-    void onCurosr(double xpos, double ypos) override;
+    void onCursor(double xpos, double ypos) override;
     void onScroll(double offset) override;
 	void update() override;
-
-	void pitch(float angle);
-	void yaw(float angle);
 
 	void setSpeed(float speed) {
 		mSpeed = speed;
 	}
+
+private:
+	void pitch(float angle);
+	void yaw(float angle);
 
 private:
     float mPitch{ 0.0f };

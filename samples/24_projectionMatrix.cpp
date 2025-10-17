@@ -26,10 +26,10 @@ void prepareVAO() {
     //准备顶点数据数组
     float vertices[] = {
         //x    y   z       r     g    b      u    v
-        -0.5, 0.5, 0.0,  1.0f, 0.0f, 0.0f,  0.0, 1.0,   //左上
-        -0.5,-0.5, 0.0,  0.0f, 1.0f, 0.0f,  0.0, 0.0,   //左下
-         0.5,-0.5, 0.0,  0.0f, 0.0f, 1.0f,  1.0, 0.0,   //右下
-         0.5, 0.5, 0.0,  0.5f, 0.5f, 0.5f,  1.0, 1.0,   //右上
+        -0.5, 0.5, -0.9,  1.0f, 0.0f, 0.0f,  0.0, 1.0,   //左上
+        -0.5,-0.5, -0.9,  0.0f, 1.0f, 0.0f,  0.0, 0.0,   //左下
+         0.5,-0.5, -0.9,  0.0f, 0.0f, 1.0f,  1.0, 0.0,   //右下
+         0.5, 0.5, -0.9,  0.5f, 0.5f, 0.5f,  1.0, 1.0,   //右上
     };
     //准备顶点索引数组
     int indices[] = {
@@ -73,11 +73,46 @@ void prepareVAO() {
 }
 
 void prepareShader() {
-    shader = new Shader("assets/shaders/20_mipmap/vertex.glsl", "assets/shaders/20_mipmap/fragment.glsl");
+    shader = new Shader("assets/shaders/24_projectionMatrix/vertex.glsl", "assets/shaders/24_projectionMatrix/fragment.glsl");
 }
 
 void prepareTexture() {
     texture = new Texture("assets/textures/goku.jpg", 0);
+}
+
+glm::mat4 modelMatrix(1.0f);
+glm::mat4 viewMatrix(1.0f);
+glm::mat4 projectionMatrix(1.0f);
+
+float degree = 0.0f;
+float offsetEyeZ = 0.1f;
+
+void updateTransform() {
+    //物体绕自身旋转
+    degree += 0.1f;
+    modelMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(degree), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    //摄像头沿z方向移，根据投影方式不同，显示效果也会不同
+    offsetEyeZ += 0.001f;
+    //lookAt：生成一个viewMatrix
+    //eye:当前摄像机所在的位置
+    //center:当前摄像机看向的那个点
+    //up:穹顶向量
+    viewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, offsetEyeZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
+void prepareOrtho() {
+    //ortho的数据是摄像机坐标系下的数据
+    //生成一个投影盒子，将内部顶点转化到NDC坐标系
+    projectionMatrix = glm::ortho(-0.4f, 0.6f, -2.0f, 2.0f, 2.0f, -2.0f);
+}
+
+void preparePerspective() {
+    //fovy:y轴方向的视张角
+    //aspect:近平面的横纵百分比
+    //near:近平面距离
+    //far:远平面距离
+    projectionMatrix = glm::perspective(glm::radians(60.f), (float)app->getWidth() / (float)app->getHeight(), 0.1f, 1000.0f);
 }
 
 void render() {
@@ -88,9 +123,11 @@ void render() {
     shader->begin();
 
     shader->setInt("sampler", 0);
-    shader->setInt("width", texture->getWidth());
-    shader->setInt("height", texture->getHeight());
 
+    shader->setMatrix4x4("modelMatrix", modelMatrix);
+    shader->setMatrix4x4("viewMatrix", viewMatrix);
+    shader->setMatrix4x4("projectionMatrix", projectionMatrix);
+     
     //绑定当前的vao
     GL_CALL(glBindVertexArray(vao));
 
@@ -119,7 +156,11 @@ int main() {
     prepareVAO();
     prepareTexture();
 
+    //prepareOrtho();
+    preparePerspective();
+
     while (app->update()) {
+        updateTransform();
         render();
     }
 

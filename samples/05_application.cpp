@@ -1,6 +1,6 @@
 #include <iostream>
 
-//注意：glad头文件必须在glfw引用之前引用
+//娉ㄦ剰锛歡lad澶存枃浠跺繀椤诲湪glfw寮曠敤涔嬪墠寮曠敤
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "wrapper/checkError.h"
@@ -23,12 +23,12 @@ int main() {
     app->setResizeCallback(OnResize);
     app->setKeyBoardCallback(OnKey);
 
-    //设置opengl视口以及清理颜色
+    //璁剧疆opengl瑙嗗彛浠ュ強娓呯悊棰滆壊
     GL_CALL(glViewport(0, 0, 800, 600));
     GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
     while (app->update()) {
-        //执行opengl画布清理操作
+        //鎵цopengl鐢诲竷娓呯悊鎿嶄綔
         GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
     }
 

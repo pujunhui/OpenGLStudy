@@ -163,5 +163,9 @@ int main() {
 
     app->destroy();
 
+    // 释放资源
+    delete shader;
+    delete texture;
+
     return 0;
 }

@@ -80,100 +80,6 @@ void prepareTexture() {
     texture = new Texture("assets/textures/goku.jpg", 0);
 }
 
-glm::mat4 transform(1.0f);
-glm::mat4 viewMatrix(1.0f);
-glm::mat4 orthoMatrix(1.0f);
-glm::mat4 perspectiveMatrix(1.0f);
-
-//旋转变换
-void doRotationTransform() {
-    //构建一个旋转矩阵，绕着z轴旋转45度角
-    //rotate函数:用于生成旋转矩阵
-    //bug1:rotate必须得到一个float类型的角度，c++的template
-    //bug2:rotate函数接受的不是角度(degree)，接收的弧度(radians)
-    //注意点:radians函数也是模板函数，切记要传入float类型数据，加f后缀
-    transform = glm::rotate(glm::mat4(1.0f), glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-}
-
-//平移变换
-void doTranslationTransform() {
-    transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0f, 0.0f));
-}
-
-//缩放变换
-void doScaleTransform() {
-    transform = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 1.0f));
-}
-
-//矩阵复合变换
-void doTransform() {
-    glm::mat4 rotateMat = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    glm::mat4 translateMat = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0f, 0.0f));
-    //先旋转，再平移
-    ///transform = translateMat * rotateMat;
-
-    //先平移，再旋转
-    transform = rotateMat * translateMat;
-}
-
-float degree = 0;
-
-//旋转变换
-void doRotation() {
-    degree += 0.1f;
-    transform = glm::rotate(glm::mat4(1.0f), glm::radians(degree), glm::vec3(0.0f, 0.0f, 1.0f));
-}
-
-//矩阵叠加变换实验
-void doTransform1() {
-    //目标一：旋转的矩形
-    //transform = glm::rotate(transform, glm::radians(0.1f), glm::vec3(0.0f, 0.0f, 1.0f));
-
-    static bool first = true;
-    //目标二：先平移再叠加旋转
-    //if (first) {
-    //    transform = glm::translate(transform, glm::vec3(0.5f, 0.0f, 0.0f));
-    //    first = false;
-    //}
-    //transform = glm::rotate(transform, glm::radians(0.1f), glm::vec3(0.0f, 0.0f, 1.0f));
-
-    //目标三：先旋转再叠加平移
-    //if (first) {
-    //    transform = glm::rotate(transform, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    //    first = false;
-    //}
-    //transform = glm::translate(transform, glm::vec3(0.001f, 0.0f, 0.0f));
-
-    //目标四：先做一次缩放，再叠加平移
-    if (first) {
-        transform = glm::scale(transform, glm::vec3(0.5f, 0.5f, 1.0f));
-        first = false;
-    }
-    transform = glm::translate(transform, glm::vec3(0.001f, 0.0f, 0.0f));
-}
-
-void prepareCamera() {
-    //lookAt：生成一个viewMatrix
-    //eye:当前摄像机所在的位置
-    //center:当前摄像机看向的那个点
-    //up:穹顶向量
-    viewMatrix = glm::lookAt(glm::vec3(0.5f, 0.0f, 0.5f), glm::vec3(0.5f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-}
-
-void prepareOrtho() {
-    //ortho的数据是摄像机坐标系下的数据
-    //生成一个投影盒子，将内部顶点转化到NDC坐标系
-    orthoMatrix = glm::ortho(-0.4f, 0.6f, -2.0f, 2.0f, 2.0f, -2.0f);
-}
-
-void preparePerspective() {
-    //fovy:y轴方向的视张角
-    //aspect:近平面的横纵百分比
-    //near:近平面距离
-    //far:远平面距离
-    perspectiveMatrix = glm::perspective(glm::radians(60.f), (float)app->getWidth() / (float)app->getHeight(), 0.1f, 1000.0f);
-}
-
 void render() {
     //执行opengl画布清理操作
     GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
@@ -182,22 +88,6 @@ void render() {
     shader->begin();
 
     shader->setInt("sampler", 0);
-
-    //shader->setMatrix4x4("transform", transform);
-    //shader->setMatrix4x4("viewMatrix", glm::mat3(1.0f));
-    //shader->setMatrix4x4("projectionMatrix", glm::mat3(1.0f));
-    
-    //shader->setMatrix4x4("transform", glm::mat3(1.0f));
-    //shader->setMatrix4x4("viewMatrix", viewMatrix);
-    //shader->setMatrix4x4("projectionMatrix", glm::mat3(1.0f));
-
-    //shader->setMatrix4x4("transform", glm::mat3(1.0f));
-    //shader->setMatrix4x4("viewMatrix", glm::mat3(1.0f));
-    //shader->setMatrix4x4("projectionMatrix", orthoMatrix);
-
-    shader->setMatrix4x4("transform", glm::mat3(1.0f));
-    shader->setMatrix4x4("viewMatrix", glm::mat3(1.0f));
-    shader->setMatrix4x4("projectionMatrix", perspectiveMatrix);
      
     //绑定当前的vao
     GL_CALL(glBindVertexArray(vao));
@@ -264,22 +154,15 @@ int main() {
     prepareVAO();
     prepareTexture();
 
-    //doRotationTransform();
-    //doTranslationTransform();
-    //doScaleTransform();
-    //doTransform();
-
-    prepareCamera();
-    prepareOrtho();
-    preparePerspective();
-
     while (app->update()) {
-        //doRotation();
-        doTransform1();
         render();
     }
 
     app->destroy();
+
+    // 释放资源
+    delete shader;
+    delete texture;
 
     return 0;
 }

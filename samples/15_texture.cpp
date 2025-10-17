@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 
-//×¢Òâ£ºgladÍ·ÎÄ¼ş±ØĞëÔÚglfwÒıÓÃÖ®Ç°ÒıÓÃ
+//æ³¨æ„ï¼šgladå¤´æ–‡ä»¶å¿…é¡»åœ¨glfwå¼•ç”¨ä¹‹å‰å¼•ç”¨
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "wrapper/checkError.h"
@@ -24,7 +24,7 @@ void OnKey(int key, int action, int mods) {
 }
 
 void prepareVao() {
-    //1 ×¼±¸Êı¾İ
+    //1 å‡†å¤‡æ•°æ®
     float positions[] = {
         -0.5f, -0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
@@ -41,7 +41,7 @@ void prepareVao() {
         0, 1, 2
     };
 
-    //2 VBO´´½¨
+    //2 VBOåˆ›å»º
     GLuint posVbo = 0;
     GL_CALL(glGenBuffers(1, &posVbo));
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
@@ -54,26 +54,26 @@ void prepareVao() {
 
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
-    //3 EBO´´½¨
+    //3 EBOåˆ›å»º
     GL_CALL(glGenBuffers(1, &ebo));
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
     GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
-    //4 Éú³Évao²¢°ó¶¨
+    //4 ç”Ÿæˆvaoå¹¶ç»‘å®š
     GL_CALL(glGenVertexArrays(1, &vao));
     GL_CALL(glBindVertexArray(vao));
 
-    //5 °ó¶¨VBO¡¢EBO
-    // ×¢Òâ£ºVAO¼ÇÂ¼µÄ×´Ì¬°üÀ¨£º
-    //      1¡¢¶¥µãÊôĞÔÖ¸Õë£¨Í¨¹ıglVertexAttribPointerÉèÖÃ£©
-    //      2¡¢Æô¶¯µÄ¶¥µãÊôĞÔ£¨Í¨¹ıglEnableVertexAttribArrayÉèÖÃ£©
-    //      3¡¢°ó¶¨µÄEBO£¨µ±VAO°ó¶¨Ê±µ÷ÓÃglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo)£©
+    //5 ç»‘å®šVBOã€EBO
+    // æ³¨æ„ï¼šVAOè®°å½•çš„çŠ¶æ€åŒ…æ‹¬ï¼š
+    //      1ã€é¡¶ç‚¹å±æ€§æŒ‡é’ˆï¼ˆé€šè¿‡glVertexAttribPointerè®¾ç½®ï¼‰
+    //      2ã€å¯åŠ¨çš„é¡¶ç‚¹å±æ€§ï¼ˆé€šè¿‡glEnableVertexAttribArrayè®¾ç½®ï¼‰
+    //      3ã€ç»‘å®šçš„EBOï¼ˆå½“VAOç»‘å®šæ—¶è°ƒç”¨glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo)ï¼‰
     // 
-    // ¶øglBindBuffer(GL_ARRAY_BUFFER, vbo)²¢²»»áÈÃVAO¼ÇÂ¼VBO
+    // è€ŒglBindBuffer(GL_ARRAY_BUFFER, vbo)å¹¶ä¸ä¼šè®©VAOè®°å½•VBO
     // 
-    //5.1 Ìí¼ÓÊôĞÔµÄÃèÊöĞÅÏ¢
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo)); //Ö»ÓĞ°ó¶¨ÁËposVbo£¬ÏÂÃæµÄÊôĞÔÃèÊö²Å»áÓë´ËvboÏà¹Ø
+    //5.1 æ·»åŠ å±æ€§çš„æè¿°ä¿¡æ¯
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo)); //åªæœ‰ç»‘å®šäº†posVboï¼Œä¸‹é¢çš„å±æ€§æè¿°æ‰ä¼šä¸æ­¤vboç›¸å…³
     GL_CALL(glEnableVertexAttribArray(0));
     GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL));
 
@@ -81,67 +81,64 @@ void prepareVao() {
     GL_CALL(glEnableVertexAttribArray(1));
     GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL));
 
-    //5.2 Ìí¼ÓEBOµ½µ±Ç°VAOÖĞ
+    //5.2 æ·»åŠ EBOåˆ°å½“å‰VAOä¸­
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
 
     GL_CALL(glBindVertexArray(0));
 }
 
 void prepareShader() {
-    //shader = new Shader("assets/shaders/14_uniform/vertex.glsl", "assets/shaders/14_uniform/fragment.glsl");
-    shader = new Shader("assets/shaders/14_uniform/vertex_offset.glsl", "assets/shaders/14_uniform/fragment.glsl");
+    shader = new Shader("assets/shaders/15_texture/vertex.glsl", "assets/shaders/15_texture/fragment.glsl");
 }
 
 void prepareTexture() {
-    //1 stbImage ¶ÁÈ¡Í¼Æ¬
+    //1 stbImage è¯»å–å›¾ç‰‡
     int width, height, channels;
 
-    //·´×ªyÖá
+    //åè½¬yè½´
     stbi_set_flip_vertically_on_load(1);
 
     unsigned char* data = stbi_load("assets/textures/goku.jpg", &width, &height, &channels, STBI_rgb_alpha);
 
-    //2 Éú³ÉÎÆÀí²¢ÇÒ¼¤»îµ¥Ôª°ó¶¨
+    //2 ç”Ÿæˆçº¹ç†å¹¶ä¸”æ¿€æ´»å•å…ƒç»‘å®š
     glGenTextures(1, &texture);
-    //--¼¤»îÎÆÀí¶ÔÏó--
+    //--æ¿€æ´»çº¹ç†å¯¹è±¡--
     glActiveTexture(GL_TEXTURE0);
-    //--°ó¶¨ÎÆÀí¶ÔÏó--
+    //--ç»‘å®šçº¹ç†å¯¹è±¡--
     glBindTexture(GL_TEXTURE_2D, texture);
 
-    //3 ´«ÊäÎÆÀíÊı¾İ£¬¿ª±ÙÏÔ´æ
+    //3 ä¼ è¾“çº¹ç†æ•°æ®ï¼Œå¼€è¾Ÿæ˜¾å­˜
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-    //4 ÊÍ·ÅÊı¾İ
+    //4 é‡Šæ”¾æ•°æ®
     stbi_image_free(data);
 
-    //5 ÉèÖÃÎÆÀíµÄ¹ıÂË·½Ê½
+    //5 è®¾ç½®çº¹ç†çš„è¿‡æ»¤æ–¹å¼
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-    //6 ÉèÖÃÎÆÀíµÄ°ü¹ü·½Ê½
+    //6 è®¾ç½®çº¹ç†çš„åŒ…è£¹æ–¹å¼
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); //u
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); //v
 }
 
 void render() {
-    //Èç¹ûrender×îºó²»½â°óvao£¬Õâ¾ä´úÂë»áµ¼ÖÂ³ÌĞòÒì³£
+    //å¦‚æœrenderæœ€åä¸è§£ç»‘vaoï¼Œè¿™å¥ä»£ç ä¼šå¯¼è‡´ç¨‹åºå¼‚å¸¸
     //GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
-    //Ö´ĞĞopengl»­²¼ÇåÀí²Ù×÷
+    //æ‰§è¡Œopenglç”»å¸ƒæ¸…ç†æ“ä½œ
     GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
 
-    //1 °ó¶¨µ±Ç°program
+    //1 ç»‘å®šå½“å‰program
     shader->begin();
 
-    shader->setFloat("time", glfwGetTime());
-
-    //2 °ó¶¨µ±Ç°vao
+    //2 ç»‘å®šå½“å‰vao
     GL_CALL(glBindVertexArray(vao));
 
-    //3 ·¢³ö»æÖÆÖ¸Áî
+    //3 å‘å‡ºç»˜åˆ¶æŒ‡ä»¤
     GL_CALL(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0));
 
-    //4 ½â°óµ±Ç°vao£¬±ÜÃâÏÂÒ»Ö¡Îó²Ù×÷vao
+    //4 è§£ç»‘å½“å‰vaoï¼Œé¿å…ä¸‹ä¸€å¸§è¯¯æ“ä½œvao
     GL_CALL(glBindVertexArray(0));
 
     shader->end();
@@ -155,7 +152,7 @@ int main() {
     app->setResizeCallback(OnResize);
     app->setKeyBoardCallback(OnKey);
 
-    //ÉèÖÃopenglÊÓ¿ÚÒÔ¼°ÇåÀíÑÕÉ«
+    //è®¾ç½®openglè§†å£ä»¥åŠæ¸…ç†é¢œè‰²
     GL_CALL(glViewport(0, 0, 800, 600));
     GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
@@ -168,6 +165,9 @@ int main() {
     }
 
     app->destroy();
+
+    // é‡Šæ”¾èµ„æº
+    delete shader;
 
     return 0;
 }

@@ -191,5 +191,8 @@ int main() {
 
     app->destroy();
 
+    // 释放资源
+    delete shader;
+
     return 0;
 }
