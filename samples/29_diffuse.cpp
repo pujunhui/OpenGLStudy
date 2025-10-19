@@ -17,6 +17,10 @@
 
 #include "glframework/geometry.h"
 
+//平行光：参数（方向，光强）uniform变量形式
+glm::vec3 lightDirection = glm::vec3(-0.4f, -1.4f, -1.9f);
+glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+
 Geometry* geometry = nullptr;
 Shader* shader = nullptr;
 Texture* texture = nullptr;
@@ -52,11 +56,11 @@ void OnScroll(double offset) {
 }
 
 void prepareShader() {
-    shader = new Shader("assets/shaders/28_diffuse/vertex.glsl", "assets/shaders/28_diffuse/fragment.glsl");
+    shader = new Shader("assets/shaders/29_diffuse/vertex.glsl", "assets/shaders/29_diffuse/fragment.glsl");
 }
 
 void prepareVAO() {
-    geometry = Geometry::createBox(3.0f);
+    geometry = Geometry::createBox(1.0f);
 }
 
 void prepareTexture() {
@@ -67,8 +71,8 @@ void prepareCamera() {
     camera = new PerspectiveCamera(60.0f, (float)app->getWidth() / (float)app->getHeight(), 0.1f, 1000.0f);
     float size = 3.0f;
     //camera = new OrthographicCamera(-size, size, -size, size, size, -size); //看向的-z轴
-    //cameraControl = new TrackBallCameraControl();
-    cameraControl = new GameCameraControl();
+    cameraControl = new TrackBallCameraControl();
+    //cameraControl = new GameCameraControl();
     cameraControl->setCamera(camera);
     cameraControl->setSensitivity(0.8f);
 }
@@ -85,6 +89,10 @@ void render() {
     shader->setMatrix4x4("modelMatrix", glm::mat4(1.0f));
     shader->setMatrix4x4("viewMatrix", camera->getViewMatrix());
     shader->setMatrix4x4("projectionMatrix", camera->getProjectionMatrix());
+
+    //光源参数的uniform更新
+    shader->setVector3("lightDirection", lightDirection);
+    shader->setVector3("lightColor", lightColor);
 
     //绑定当前的vao
     GL_CALL(glBindVertexArray(geometry->getVao()));

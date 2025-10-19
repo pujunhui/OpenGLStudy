@@ -17,6 +17,13 @@
 
 #include "glframework/geometry.h"
 
+//平行光：参数（方向，光强）uniform变量形式
+glm::vec3 lightDirection = glm::vec3(-1.0f, 0.0f, -1.0f);
+glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+
+//specular
+float specularIntensity = 0.5f;
+
 Geometry* geometry = nullptr;
 Shader* shader = nullptr;
 Texture* texture = nullptr;
@@ -51,17 +58,16 @@ void OnScroll(double offset) {
     std::cout << "OnScroll(" << offset << ")" << std::endl;
 }
 
-void prepareVAO() {
-    geometry = Geometry::createSphere(1.0f);
-    //geometry = Geometry::createScreenPlane();
+void prepareShader() {
+    shader = new Shader("assets/shaders/30_specular/vertex.glsl", "assets/shaders/30_specular/fragment.glsl");
 }
 
-void prepareShader() {
-    shader = new Shader("assets/shaders/27_geometry/vertex.glsl", "assets/shaders/27_geometry/fragment.glsl");
+void prepareVAO() {
+    geometry = Geometry::createBox(1.0f);
 }
 
 void prepareTexture() {
-    texture = new Texture("assets/textures/sphericalMap.jpg", 0);
+    texture = new Texture("assets/textures/goku.jpg", 0);
 }
 
 void prepareCamera() {
@@ -86,6 +92,13 @@ void render() {
     shader->setMatrix4x4("modelMatrix", glm::mat4(1.0f));
     shader->setMatrix4x4("viewMatrix", camera->getViewMatrix());
     shader->setMatrix4x4("projectionMatrix", camera->getProjectionMatrix());
+
+    //光源参数的uniform更新
+    shader->setVector3("lightDirection", lightDirection);
+    shader->setVector3("lightColor", lightColor);
+
+    shader->setVector3("cameraPosition", camera->mPosition);
+    shader->setFloat("specularIntensity", specularIntensity);
 
     //绑定当前的vao
     GL_CALL(glBindVertexArray(geometry->getVao()));

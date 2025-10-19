@@ -51,17 +51,16 @@ void OnScroll(double offset) {
     std::cout << "OnScroll(" << offset << ")" << std::endl;
 }
 
-void prepareVAO() {
-    geometry = Geometry::createSphere(1.0f);
-    //geometry = Geometry::createScreenPlane();
+void prepareShader() {
+    shader = new Shader("assets/shaders/28_normal/vertex.glsl", "assets/shaders/28_normal/fragment.glsl");
 }
 
-void prepareShader() {
-    shader = new Shader("assets/shaders/27_geometry/vertex.glsl", "assets/shaders/27_geometry/fragment.glsl");
+void prepareVAO() {
+    geometry = Geometry::createSphere(1.0f);
 }
 
 void prepareTexture() {
-    texture = new Texture("assets/textures/sphericalMap.jpg", 0);
+    texture = new Texture("assets/textures/goku.jpg", 0);
 }
 
 void prepareCamera() {

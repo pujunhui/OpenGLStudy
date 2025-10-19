@@ -6,13 +6,13 @@ layout(location = 2) in vec2 aUV;
 
 uniform float time;
 
-out vec3 vColor;
-out vec2 vUV;
+out vec3 color;
+out vec2 uv;
 
 void main()
 {
     gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0f);
-    vColor = aColor;
+    color = aColor;
     float deltaU = time * 0.3;
-    vUV = vec2(aUV.x + deltaU, aUV.y + deltaU);
+    uv = vec2(aUV.x + deltaU, aUV.y + deltaU);
 }

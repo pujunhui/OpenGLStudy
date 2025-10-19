@@ -17,12 +17,24 @@
 
 #include "glframework/geometry.h"
 
+//平行光：参数（方向，光强）uniform变量形式
+glm::vec3 lightDirection = glm::vec3(-1.0f, 0.0f, -1.0f);
+glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+
+//specular
+float specularIntensity = 0.5f;
+
+//ambient
+glm::vec3 ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
+
 Geometry* geometry = nullptr;
 Shader* shader = nullptr;
 Texture* texture = nullptr;
 
 Camera* camera = nullptr;
 CameraControl* cameraControl = nullptr;
+
+glm::mat4 modelMatrix;
 
 void OnResize(int width, int height) {
     GL_CALL(glViewport(0, 0, width, height));
@@ -51,17 +63,16 @@ void OnScroll(double offset) {
     std::cout << "OnScroll(" << offset << ")" << std::endl;
 }
 
-void prepareVAO() {
-    geometry = Geometry::createSphere(1.0f);
-    //geometry = Geometry::createScreenPlane();
+void prepareShader() {
+    shader = new Shader("assets/shaders/32_normalMatrix/vertex.glsl", "assets/shaders/32_normalMatrix/fragment.glsl");
 }
 
-void prepareShader() {
-    shader = new Shader("assets/shaders/27_geometry/vertex.glsl", "assets/shaders/27_geometry/fragment.glsl");
+void prepareVAO() {
+    geometry = Geometry::createSphere(1.0f);
 }
 
 void prepareTexture() {
-    texture = new Texture("assets/textures/sphericalMap.jpg", 0);
+    texture = new Texture("assets/textures/goku.jpg", 0);
 }
 
 void prepareCamera() {
@@ -74,7 +85,15 @@ void prepareCamera() {
     cameraControl->setSensitivity(0.8f);
 }
 
-void render() {
+float degree = 0.0f;
+
+void updateTransform() {
+    //更新旋转角度
+    degree += 0.03f;
+    modelMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(degree), glm::vec3(0.0f, 1.0f, 1.0f));
+}
+
+void render() {    
     //执行opengl画布清理操作
     GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
@@ -83,9 +102,17 @@ void render() {
 
     shader->setInt("sampler", 0);
 
-    shader->setMatrix4x4("modelMatrix", glm::mat4(1.0f));
+    shader->setMatrix4x4("modelMatrix", modelMatrix);
     shader->setMatrix4x4("viewMatrix", camera->getViewMatrix());
     shader->setMatrix4x4("projectionMatrix", camera->getProjectionMatrix());
+
+    //光源参数的uniform更新
+    shader->setVector3("lightDirection", lightDirection);
+    shader->setVector3("lightColor", lightColor);
+    shader->setFloat("specularIntensity", specularIntensity);
+    shader->setVector3("ambientColor", ambientColor);
+
+    shader->setVector3("cameraPosition", camera->mPosition);
 
     //绑定当前的vao
     GL_CALL(glBindVertexArray(geometry->getVao()));
@@ -127,6 +154,7 @@ int main() {
     prepareCamera();
 
     while (app->update()) {
+        updateTransform();
         cameraControl->update();
         render();
     }

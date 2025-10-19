@@ -116,6 +116,14 @@ void Shader::setVector3(const std::string& name, const float* values) {
     GL_CALL(glUniform3fv(location, 1, values));
 }
 
+void Shader::setVector3(const std::string& name, const glm::vec3 value) {
+    //1 通过名称拿到Uniform变量的位置Location
+    GLint location = GL_CALL(glGetUniformLocation(mProgram, name.c_str()));
+
+    //2 通过Location更新Uniform变量的值
+    GL_CALL(glUniform3f(location, value.x, value.y, value.z));
+}
+
 void Shader::setInt(const std::string& name, int value) {
     //1 通过名称拿到Uniform变量的位置Location
     GLint location = GL_CALL(glGetUniformLocation(mProgram, name.c_str()));

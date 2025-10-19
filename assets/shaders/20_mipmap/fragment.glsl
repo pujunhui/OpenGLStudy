@@ -1,8 +1,8 @@
 #version 460 core
 out vec4 FragColor;
 
-in vec3 vColor;
-in vec2 vUV;
+in vec3 color;
+in vec2 uv;
 
 uniform sampler2D sampler;
 uniform int width;
@@ -13,7 +13,7 @@ uniform int height;
 void main()
 {
 	//1 获取当前像素对应的纹理上的纹素具体位置
-	vec2 location = vUV * vec2(width, height);
+	vec2 location = uv * vec2(width, height);
 
 	//2 计算当前像素对应纹素具体位置在xy方向上的变化量
 	vec2 dx = dFdx(location);
@@ -26,6 +26,6 @@ void main()
 	//4 计算出mipmap的采用级别
 	int level = max(int(L + 0.5), 0);
 
-	FragColor = textureLod(sampler, vUV, level);
-	//FragColor = texture(sampler, vUV);
+	FragColor = textureLod(sampler, uv, level);
+	//FragColor = texture(sampler, uv);
 }
