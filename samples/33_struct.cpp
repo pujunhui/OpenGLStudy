@@ -16,10 +16,14 @@
 #include "application/camera/trackBallCameraControl.h"
 
 #include "glframework/geometry.h"
+#include "glframework/material/phongMaterial.h"
+#include "glframework/mesh.h"
+#include "glframework/renderer/renderer.h"
 
-Geometry* geometry = nullptr;
-Shader* shader = nullptr;
-Texture* texture = nullptr;
+Renderer* renderer = nullptr;
+std::vector<Mesh*> meshes{};
+DirectionalLight* dirLight = nullptr;
+AmbientLight* ambLight = nullptr;
 
 Camera* camera = nullptr;
 CameraControl* cameraControl = nullptr;
@@ -51,17 +55,24 @@ void OnScroll(double offset) {
     std::cout << "OnScroll(" << offset << ")" << std::endl;
 }
 
-void prepareVAO() {
-    geometry = Geometry::createSphere(1.0f);
-    //geometry = Geometry::createScreenPlane();
-}
+void prepare() {
+    renderer = new Renderer();
+    //1 创建geometry
+    auto geometry = Geometry::createSphere(1.0f);
 
-void prepareShader() {
-    shader = new Shader("assets/shaders/27_geometry/vertex.glsl", "assets/shaders/27_geometry/fragment.glsl");
-}
+    //2 创建一个material
+    auto meterial = new PhongMaterial();
+    meterial->mShiness = 10.0f;
+    meterial->mDiffuse = new Texture("assets/textures/goku.jpg", 0);
 
-void prepareTexture() {
-    texture = new Texture("assets/textures/sphericalMap.jpg", 0);
+    //3 生成mesh
+    auto mesh = new Mesh(geometry, meterial);
+
+    meshes.push_back(mesh);
+    
+    dirLight = new DirectionalLight();
+    ambLight = new AmbientLight();
+    ambLight->mColor = glm::vec3(0.1f);
 }
 
 void prepareCamera() {
@@ -74,31 +85,9 @@ void prepareCamera() {
     cameraControl->setSensitivity(0.8f);
 }
 
-void render() {
+void render() {    
     //执行opengl画布清理操作
     GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-
-    //绑定当前的program
-    shader->begin();
-
-    shader->setInt("sampler", 0);
-
-    shader->setMatrix4x4("modelMatrix", glm::mat4(1.0f));
-    shader->setMatrix4x4("viewMatrix", camera->getViewMatrix());
-    shader->setMatrix4x4("projectionMatrix", camera->getProjectionMatrix());
-
-    //绑定当前的vao
-    GL_CALL(glBindVertexArray(geometry->getVao()));
-
-    texture->bind();
-
-    //发出绘制指令
-    GL_CALL(glDrawElements(GL_TRIANGLES, geometry->getIndicesCount(), GL_UNSIGNED_INT, 0));
-
-    //解绑vao
-    GL_CALL(glBindVertexArray(0));
-
-    shader->end();
 }
 
 int main() {
@@ -121,20 +110,15 @@ int main() {
     //设置深度测试方法
     glDepthFunc(GL_LESS);
 
-    prepareShader();
-    prepareVAO();
-    prepareTexture();
     prepareCamera();
+    prepare();
 
     while (app->update()) {
         cameraControl->update();
-        render();
+        renderer->render(meshes, camera, dirLight, ambLight);
     }
 
     // 释放资源
-    delete geometry;  // Geometry析构函数会清理VAO/VBO/EBO
-    delete shader;
-    delete texture;
     delete camera;
     delete cameraControl;
 

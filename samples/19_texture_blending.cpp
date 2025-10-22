@@ -126,13 +126,13 @@ int main() {
         render();
     }
 
-    app->destroy();
-
     // 释放资源
     delete shader;
     delete grassTexture;
     delete landTexture;
     delete noiseTexture;
+
+    app->destroy();
 
     return 0;
 }

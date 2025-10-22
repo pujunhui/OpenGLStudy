@@ -161,11 +161,11 @@ int main() {
         render();
     }
 
-    app->destroy();
-
     // 释放资源
     delete shader;
     delete texture;
+
+    app->destroy();
 
     return 0;
 }

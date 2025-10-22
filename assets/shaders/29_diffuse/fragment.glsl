@@ -20,7 +20,11 @@ void main()
 	vec3 normalN = normalize(normal);
 	vec3 lightDirN = normalize(lightDirection);
 
-	float diffuse = clamp(dot(-lightDirN, normalN), 0.0f, 1.0f);
+	//3 计算漫反射cos值
+	float diffuse = dot(-lightDirN, normalN);
+	
+	//4 避免光照背面cos值
+	diffuse = clamp(diffuse, 0.0f, 1.0f);
 
 	vec3 finalColor = lightColor * diffuse * objectColor;
 	

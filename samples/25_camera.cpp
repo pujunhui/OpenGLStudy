@@ -167,8 +167,6 @@ int main() {
         render();
     }
 
-    app->destroy();
-
     // 释放资源
     delete shader;
     delete texture;
@@ -177,6 +175,8 @@ int main() {
     
     // 清理OpenGL对象
     GL_CALL(glDeleteVertexArrays(1, &vao));
+
+    app->destroy();
 
     return 0;
 }

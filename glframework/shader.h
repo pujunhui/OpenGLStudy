@@ -20,6 +20,7 @@ public:
 
     void setInt(const std::string& name, int value);
 
+    void setMatrix3x3(const std::string& name, glm::mat3 value);
     void setMatrix4x4(const std::string& name, const glm::mat4 value);
 
 private:

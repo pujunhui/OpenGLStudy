@@ -138,14 +138,14 @@ int main() {
         render();
     }
 
-    app->destroy();
-
     // 释放资源
     delete geometry;  // Geometry析构函数会清理VAO/VBO/EBO
     delete shader;
     delete texture;
     delete camera;
     delete cameraControl;
+
+    app->destroy();
 
     return 0;
 }
