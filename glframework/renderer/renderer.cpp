@@ -3,13 +3,19 @@
 #include <iostream>
 
 #include "../material/phongMaterial.h"
+#include "../material/whiteMaterial.h"
 
 Renderer::Renderer() {
-    mPhongShader = new Shader("assets/shaders/33_struct/phong.vert", "assets/shaders/33_struct/phong.frag");
+    //mPhongShader = new Shader("assets/shaders/33_struct/phong.vert", "assets/shaders/33_struct/phong.frag");
+    //mPhongShader = new Shader("assets/shaders/35_specularMask/phong.vert", "assets/shaders/35_specularMask/phong.frag");
+
+    mPhongShader = new Shader("assets/shaders/36_pointLight/phong.vert", "assets/shaders/36_pointLight/phong.frag");
+    mWhiteShader = new Shader("assets/shaders/36_pointLight/white.vert", "assets/shaders/36_pointLight/white.frag");
 }
 
 Renderer::~Renderer() {
     delete mPhongShader;
+    delete mWhiteShader;
 }
 
 void Renderer::render(
@@ -18,36 +24,40 @@ void Renderer::render(
     DirectionalLight* dirLight,
     AmbientLight* ambLight
 ) {
-    //1 ÉèÖÃµ±Ç°Ö¡»æÖÆµÄÊ±ºò£¬openglµÄ±ØÒª×´Ì¬»ú²ÎÊı
+    //1 è®¾ç½®å½“å‰å¸§ç»˜åˆ¶çš„æ—¶å€™ï¼Œopenglçš„å¿…è¦çŠ¶æ€æœºå‚æ•°
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    //2 ÇåÀí»­²¼
+    //2 æ¸…ç†ç”»å¸ƒ
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //3 ±éÀúmesh½øĞĞ»æÖÆ
+    //3 éå†meshè¿›è¡Œç»˜åˆ¶
     for (int i = 0; i < meshes.size(); i++) {
         auto mesh = meshes[i];
         auto geometry = mesh->mGeometry;
         auto material = mesh->mMaterial;
 
-        //1 ¾ö¶¨Ê¹ÓÃÄÄ¸öShader
+        //1 å†³å®šä½¿ç”¨å“ªä¸ªShader
         Shader* shader = pickShader(material->mType);
 
-        //2 ¸üĞÂshaderµÄuniform
+        //2 æ›´æ–°shaderçš„uniform
         shader->begin();
 
         switch (material->mType) {
         case MaterialType::PhongMaterial: {
             PhongMaterial* phongMat = (PhongMaterial*)material;
 
-            //diffuseÌùÍ¼
+            //diffuseè´´å›¾
 
-            //½«ÎÆÀí²ÉÑùÆ÷ÓëÎÆÀíµ¥Ôª½øĞĞ¹Ò¹³
+            //å°†çº¹ç†é‡‡æ ·å™¨ä¸çº¹ç†å•å…ƒè¿›è¡ŒæŒ‚é’©
             shader->setInt("sampler", 0);
 
-            //½«ÎÆÀíÓëÎÆÀíµ¥Ôª½øĞĞ¹Ò¹³
+            //å°†çº¹ç†ä¸çº¹ç†å•å…ƒè¿›è¡ŒæŒ‚é’©
             phongMat->mDiffuse->bind();
+
+            //é«˜å…‰æ¨¡æ¿çš„å¸§æ›´æ–°
+            shader->setInt("specularMaskSampler", 1);
+            phongMat->mSpecularMask->bind();
 
             //MVP
             shader->setMatrix4x4("modelMatrix", mesh->getModelMatrix());
@@ -55,9 +65,9 @@ void Renderer::render(
             shader->setMatrix4x4("projectionMatrix", camera->getProjectionMatrix());
 
             auto notmalMatrix = glm::mat3(glm::transpose(glm::inverse(mesh->getModelMatrix())));
-            shader->setMatrix3x3("notmalMatrix", notmalMatrix);
+            shader->setMatrix3x3("normalMatrix", notmalMatrix);
 
-            //¹âÔ´²ÎÊıµÄuniform¸üĞÂ
+            //å…‰æºå‚æ•°çš„uniformæ›´æ–°
             shader->setVector3("lightDirection", dirLight->mDirection);
             shader->setVector3("lightColor", dirLight->mColor);
             shader->setFloat("specularIntensity", dirLight->mSpecularIntensity);
@@ -66,8 +76,18 @@ void Renderer::render(
 
             shader->setVector3("ambientColor", ambLight->mColor);
 
-            //Ïà»úĞÅÏ¢¸üĞÂ
+            //ç›¸æœºä¿¡æ¯æ›´æ–°
             shader->setVector3("cameraPosition", camera->mPosition);
+
+            break;
+        }
+        case MaterialType::WhiteMaterial: {
+            WhiteMaterial* whiteMat = (WhiteMaterial*)material;
+
+            //MVP
+            shader->setMatrix4x4("modelMatrix", mesh->getModelMatrix());
+            shader->setMatrix4x4("viewMatrix", camera->getViewMatrix());
+            shader->setMatrix4x4("projectionMatrix", camera->getProjectionMatrix());
 
             break;
         }
@@ -75,10 +95,99 @@ void Renderer::render(
             break;
         }
 
-        //3 °ó¶¨vao
+        //3 ç»‘å®švao
         glBindVertexArray(geometry->getVao());
 
-        //4 Ö´ĞĞ»æÖÆÃüÁî
+        //4 æ‰§è¡Œç»˜åˆ¶å‘½ä»¤
+        glDrawElements(GL_TRIANGLES, geometry->getIndicesCount(), GL_UNSIGNED_INT, 0);
+    }
+}
+
+void Renderer::render(
+    const std::vector<Mesh*>& meshes,
+    Camera* camera,
+    PointLight* pointLight,
+    AmbientLight* ambLight
+){
+
+    //1 è®¾ç½®å½“å‰å¸§ç»˜åˆ¶çš„æ—¶å€™ï¼Œopenglçš„å¿…è¦çŠ¶æ€æœºå‚æ•°
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
+    //2 æ¸…ç†ç”»å¸ƒ
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    //3 éå†meshè¿›è¡Œç»˜åˆ¶
+    for (int i = 0; i < meshes.size(); i++) {
+        auto mesh = meshes[i];
+        auto geometry = mesh->mGeometry;
+        auto material = mesh->mMaterial;
+
+        //1 å†³å®šä½¿ç”¨å“ªä¸ªShader
+        Shader* shader = pickShader(material->mType);
+
+        //2 æ›´æ–°shaderçš„uniform
+        shader->begin();
+
+        switch (material->mType) {
+        case MaterialType::PhongMaterial: {
+            PhongMaterial* phongMat = (PhongMaterial*)material;
+
+            //diffuseè´´å›¾
+
+            //å°†çº¹ç†é‡‡æ ·å™¨ä¸çº¹ç†å•å…ƒè¿›è¡ŒæŒ‚é’©
+            shader->setInt("sampler", 0);
+
+            //å°†çº¹ç†ä¸çº¹ç†å•å…ƒè¿›è¡ŒæŒ‚é’©
+            phongMat->mDiffuse->bind();
+
+            //é«˜å…‰æ¨¡æ¿çš„å¸§æ›´æ–°
+            shader->setInt("specularMaskSampler", 1);
+            phongMat->mSpecularMask->bind();
+
+            //MVP
+            shader->setMatrix4x4("modelMatrix", mesh->getModelMatrix());
+            shader->setMatrix4x4("viewMatrix", camera->getViewMatrix());
+            shader->setMatrix4x4("projectionMatrix", camera->getProjectionMatrix());
+
+            auto notmalMatrix = glm::mat3(glm::transpose(glm::inverse(mesh->getModelMatrix())));
+            shader->setMatrix3x3("normalMatrix", notmalMatrix);
+
+            //å…‰æºå‚æ•°çš„uniformæ›´æ–°
+            shader->setVector3("lightPosition", pointLight->getPosition());
+            shader->setVector3("lightColor", pointLight->mColor);
+            shader->setFloat("specularIntensity", pointLight->mSpecularIntensity);
+            shader->setFloat("k2", pointLight->mK2);
+            shader->setFloat("k1", pointLight->mK1);
+            shader->setFloat("kc", pointLight->mKc);
+
+            shader->setFloat("shiness", phongMat->mShiness);
+
+            shader->setVector3("ambientColor", ambLight->mColor);
+
+            //ç›¸æœºä¿¡æ¯æ›´æ–°
+            shader->setVector3("cameraPosition", camera->mPosition);
+
+            break;
+        }
+        case MaterialType::WhiteMaterial: {
+            WhiteMaterial* whiteMat = (WhiteMaterial*)material;
+
+            //MVP
+            shader->setMatrix4x4("modelMatrix", mesh->getModelMatrix());
+            shader->setMatrix4x4("viewMatrix", camera->getViewMatrix());
+            shader->setMatrix4x4("projectionMatrix", camera->getProjectionMatrix());
+
+            break;
+        }
+        default:
+            break;
+        }
+
+        //3 ç»‘å®švao
+        glBindVertexArray(geometry->getVao());
+
+        //4 æ‰§è¡Œç»˜åˆ¶å‘½ä»¤
         glDrawElements(GL_TRIANGLES, geometry->getIndicesCount(), GL_UNSIGNED_INT, 0);
     }
 }
@@ -88,6 +197,9 @@ Shader* Renderer::pickShader(MaterialType type) {
     switch (type) {
     case MaterialType::PhongMaterial:
         result = mPhongShader;
+        break;
+    case MaterialType::WhiteMaterial:
+        result = mWhiteShader;
         break;
     default:
         std::cout << "Unknown material type to pick shader" << std::endl;

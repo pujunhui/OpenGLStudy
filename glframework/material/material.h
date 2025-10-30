@@ -2,9 +2,10 @@
 
 #include "../core.h"
 
-//使用C++的枚举类
+//浣跨敤C++鐨勬灇涓剧被
 enum class MaterialType {
-    PhongMaterial
+	PhongMaterial,
+	WhiteMaterial
 };
 
 class Material

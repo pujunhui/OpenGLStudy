@@ -5,13 +5,10 @@ layout (location = 2) in vec3 aNormal;
 
 out vec2 uv;
 out vec3 normal;
-out vec3 worldPosition;
 
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
-
-uniform mat3 normalMatrix;
 
 void main()
 {
@@ -21,12 +18,8 @@ void main()
 	//做一个中间变量TransformPosition，用于计算四维位置与modelMatrix相乘的中间结果
 	transformPosition = modelMatrix * transformPosition;
 	
-	//计算当前顶点的worldPosition，并且向后传输给FragmentShader
-	worldPosition = transformPosition.xyz;
-	
 	gl_Position = projectionMatrix * viewMatrix * transformPosition;
 	uv = aUV;
 	//normal = transpose(inverse(mat3(modelMatrix))) * aNormal;
-	normal = normalMatrix * aNormal;
+	normal = aNormal;
 }
-

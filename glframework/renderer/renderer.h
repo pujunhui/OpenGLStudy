@@ -7,6 +7,7 @@
 #include "../../application/camera/camera.h"
 #include "../light/directionalLight.h"
 #include "../light/ambientLight.h"
+#include "../light/pointLight.h"
 #include "../shader.h"
 
 class Renderer
@@ -15,8 +16,8 @@ public:
     Renderer();
     ~Renderer();
 
-    //äÖÈ¾¹¦ÄÜº¯Êı
-    //  Ã¿´Îµ÷ÓÃ¶¼»áäÖÈ¾Ò»Ö¡
+    //æ¸²æŸ“åŠŸèƒ½å‡½æ•°
+    //  æ¯æ¬¡è°ƒç”¨éƒ½ä¼šæ¸²æŸ“ä¸€å¸§
     void render(
         const std::vector<Mesh*>& meshes,
         Camera* camera,
@@ -24,12 +25,20 @@ public:
         AmbientLight* ambLight
     );
 
+    void render(
+        const std::vector<Mesh*>& meshes,
+        Camera* camera,
+        PointLight* pointLight,
+        AmbientLight* ambLight
+    );
+
 private:
-    //¸ù¾İMaterialÀàĞÍ²»Í¬£¬ÌôÑ¡²»Í¬µÄshader
+    //æ ¹æ®Materialç±»å‹ä¸åŒï¼ŒæŒ‘é€‰ä¸åŒçš„shader
     Shader* pickShader(MaterialType type);
 
 private:
-    //Éú³É¶àÖÖ²»Í¬µÄshader¶ÔÏó
-    //¸ù¾İ²ÄÖÊÀàĞÍµÄ²»Í¬£¬ÌôÑ¡Ê¹ÓÃÄÄÒ»¸öshader¶ÔÏó
+    //ç”Ÿæˆå¤šç§ä¸åŒçš„shaderå¯¹è±¡
+    //æ ¹æ®æè´¨ç±»å‹çš„ä¸åŒï¼ŒæŒ‘é€‰ä½¿ç”¨å“ªä¸€ä¸ªshaderå¯¹è±¡
     Shader* mPhongShader{ nullptr };
+    Shader* mWhiteShader{ nullptr };
 };

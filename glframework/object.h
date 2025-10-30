@@ -18,6 +18,8 @@ public:
 
     glm::mat4 getModelMatrix();
 
+    glm::vec3 getPosition() const { return mPosition; }
+
 protected:
     glm::vec3 mPosition{ 0.0f };
 
